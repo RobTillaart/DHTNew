@@ -121,7 +121,7 @@ void test()
   Serial.print(duration);
   Serial.print(",\t");
   Serial.println(mySensor.getType());
-  delay(250);
+  delay(500);
 }
 
 
