@@ -29,6 +29,7 @@ DHTNEW::DHTNEW(uint8_t pin) { _pin = pin; };
 // DHTLIB_ERROR_TIMEOUT
 int DHTNEW::read()
 {
+  if (millis() - _lastRead < DHTLIB_DHT_READ_DELAY ) return DHTLIB_OK;
   if (_type != 0) return _read();
 
   _type = 22;

@@ -22,6 +22,8 @@
 #define DHTLIB_DHT11_WAKEUP     18
 #define DHTLIB_DHT_WAKEUP       1
 
+#define DHTLIB_DHT_READ_DELAY   2000
+
 // max timeout is 100usec.
 // For a 16Mhz proc that is max 1600 clock cycles
 // loops using TIMEOUT use at least 4 clock cycli

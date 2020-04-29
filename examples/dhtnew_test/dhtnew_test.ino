@@ -25,6 +25,8 @@ DHTNEW mySensor(6);
 void setup()
 {
   Serial.begin(115200);
+  Serial.println("---Starting Up---");
+  delay(2000);
   Serial.println("dhtnew_test.ino");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
@@ -59,18 +61,24 @@ void setup()
   mySensor.setTempOffset(0);
   test();
 
-  Serial.println("\n4. LastRead test");
-  mySensor.read();
+  delay(2000);
+  Serial.println("\n4. Get LastRead test");
   for (int i = 0; i < 20; i++)
   {
-    if (millis() - mySensor.lastRead() > 1000)
+    if (millis() - mySensor.lastRead() > 2000)
     {
       mySensor.read();
-      Serial.println("actual read");
+      Serial.println("-------------");
+      Serial.println("Taking reading");
+      Serial.print(mySensor.getHumidity(), 1);
+      Serial.print(",\t");
+      Serial.println(mySensor.getTemperature(), 1);
+      Serial.println("-------------");
+      Serial.println("LastRead results");
     }
-    Serial.print(mySensor.humidity, 1);
+    Serial.print(mySensor.getHumidity(), 1);
     Serial.print(",\t");
-    Serial.println(mySensor.temperature, 1);
+    Serial.println(mySensor.getTemperature(), 1);
     delay(250);
   }
 
@@ -105,15 +113,15 @@ void test()
       break;
   }
   // DISPLAY DATA
-  Serial.print(mySensor.humidity, 1);
+  Serial.print(mySensor.getHumidity(), 1);
   Serial.print(",\t");
-  Serial.print(mySensor.temperature, 1);
+  Serial.print(mySensor.getTemperature(), 1);
   Serial.print(",\t");
   uint32_t duration = stop - start;
   Serial.print(duration);
   Serial.print(",\t");
   Serial.println(mySensor.getType());
-  delay(500);
+  delay(250);
 }
 
 
