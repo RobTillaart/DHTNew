@@ -34,17 +34,31 @@ int DHTNEW::read()
   {
     if ((_type == 22) && (millis() - _lastRead < DHTLIB_DHT_READ_DELAY))
     {
-      return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec)
+      if (_waitForReading)
+       {
+        while (millis() - _lastRead < DHTLIB_DHT_READ_DELAY){}
+       }
+      else
+      {
+        return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec)
+      }
     }
     else if ((_type == 11) && (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY))
     {
-      return DHTLIB_OK;   // returns previous reading if 11 and delay not met (1 sec)
+      if (_waitForReading)
+       {
+        while (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY){}
+       }
+      else
+      {
+        return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec)
+      }
     }
     else
     {
       return _read();     // if delay has been met then take a reading
     }
-  } 
+  }
 
   _type = 22;
   _wakeupDelay = DHTLIB_DHT_WAKEUP;
@@ -66,12 +80,12 @@ int DHTNEW::read()
 // DHTLIB_ERROR_TIMEOUT
 int DHTNEW::_read()
 {
-  _lastRead = millis();
-
   // READ VALUES
   if (_disableIRQ) noInterrupts();
   int rv = _readSensor();
   if (_disableIRQ) interrupts();
+
+  _lastRead = millis(); // given after taking a reading
 
   if (rv != DHTLIB_OK)
   {

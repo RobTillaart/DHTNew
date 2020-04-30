@@ -18,9 +18,11 @@
 // pin 3 : NC
 // PIN 4 : GND
 
-#include <dhtnew.h>
+#include "dhtnew.h"
 
-DHTNEW mySensor(6);
+DHTNEW mySensor(18);
+
+
 
 void setup()
 {
@@ -30,7 +32,15 @@ void setup()
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
   Serial.println();
-
+  
+  // Setting this to true will force the sketch to,
+  // wait until the sensor can take another reading,
+  // (this can add ~2-3 sec to .read() depending on sensor). 
+  // If false, when a sensor is asked to read before it,
+  // is ready the last read values will be returned.
+  // It is set to false by default. 
+  mySensor.setWaitForReading(true);
+  
   Serial.println("\n1. Type detection test, first run might take longer to determine type");
   Serial.println("STAT\tHUMI\tTEMP\tTIME\tTYPE");
   test();
@@ -60,8 +70,9 @@ void setup()
   mySensor.setTempOffset(0);
   test();
 
-  delay(2000);
+  
   Serial.println("\n4. Get LastRead test");
+  delay(2250);
   for (int i = 0; i < 20; i++)
   {
     if (millis() - mySensor.lastRead() > 2000)

@@ -22,8 +22,8 @@
 #define DHTLIB_DHT11_WAKEUP     18
 #define DHTLIB_DHT_WAKEUP       1
 
-#define DHTLIB_DHT11_READ_DELAY 1000
-#define DHTLIB_DHT_READ_DELAY   2000
+#define DHTLIB_DHT11_READ_DELAY 1250
+#define DHTLIB_DHT_READ_DELAY   2250
 
 // max timeout is 100usec.
 // For a 16Mhz proc that is max 1600 clock cycles
@@ -46,11 +46,11 @@ public:
     // lastRead is in MilliSeconds since start sketch
     uint32_t lastRead()               { return _lastRead; };
 
-	// preferred interface
-	float getHumidity()               { return humidity; };
-	float getTemperature()            { return temperature; };
+  // preferred interface
+  float getHumidity()               { return humidity; };
+  float getTemperature()            { return temperature; };
 
-	// these values should be private in future ==> read only
+  // these values should be private in future ==> read only
     float humidity;
     float temperature;
 
@@ -64,6 +64,10 @@ public:
     bool getDisableIRQ()              { return _disableIRQ; };
     void setDisableIRQ(bool b )       { _disableIRQ = b; };
 
+    bool getWaitForReading()              { return _waitForReading; };
+    void setWaitForReading(bool b )       { _waitForReading = b; };
+
+
 private:
     uint8_t  _pin = 0;
     uint8_t  _wakeupDelay = 0;
@@ -72,6 +76,7 @@ private:
     float    _tempOffset = 0.0;
     uint32_t _lastRead = 0;
     bool     _disableIRQ = false;
+    bool     _waitForReading = false;
 
     uint8_t  _bits[5];  // buffer to receive data
     int      _read();
