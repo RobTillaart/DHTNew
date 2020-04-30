@@ -1,15 +1,19 @@
 //
 //    FILE: dhtnew_adaptive_delay.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: DHTNEW library test sketch for Arduino
-//     URL:
+//     URL: https://github.com/RobTillaart/DHTNew
 // HISTORY:
 //
-// 0.1.0 - 2018-08-06 initial version
+// 0.1.0    2018-08-06 initial version
+// 0.1.1    2020-04-30 replaced humidity and temperature with functions
 //
-// Released to the public domain
-//
+// FRONT left 2 right
+// pin 1 : VCC
+// pin 2 : DATA
+// pin 3 : NC
+// PIN 4 : GND
 
 #include <dhtnew.h>
 
@@ -61,9 +65,9 @@ void setup()
       mySensor.read();
       Serial.println("actual read");
     }
-    Serial.print(mySensor.humidity, 1);
+    Serial.print(mySensor.getHumidity(), 1);
     Serial.print(",\t");
-    Serial.println(mySensor.temperature, 1);
+    Serial.println(mySensor.getTemperature(), 1);
     delay(250);
   }
 

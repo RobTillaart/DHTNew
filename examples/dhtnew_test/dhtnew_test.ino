@@ -3,14 +3,13 @@
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.2
 // PURPOSE: DHTNEW library test sketch for Arduino
-//     URL:
+//     URL: https://github.com/RobTillaart/DHTNew
 // HISTORY:
 //
-// 0.1.0 - 2017-07-24 initial version
-// 0.1.1 - 2017-07-29 added begin();
-// 0.1.2 - 2018-01-08 removed begin();
-//
-// Released to the public domain
+// 0.1.0    2017-07-24 initial version
+// 0.1.1    2017-07-29 added begin();
+// 0.1.2    2018-01-08 removed begin();
+// 0.1.3    2020-04-30 replaced humidity and temperature with functions
 //
 // FRONT left 2 right
 // pin 1 : VCC
@@ -68,9 +67,9 @@ void setup()
       mySensor.read();
       Serial.println("actual read");
     }
-    Serial.print(mySensor.humidity, 1);
+    Serial.print(mySensor.getHumidity(), 1);
     Serial.print(",\t");
-    Serial.println(mySensor.temperature, 1);
+    Serial.println(mySensor.getTemperature(), 1);
     delay(250);
   }
 
@@ -105,9 +104,9 @@ void test()
       break;
   }
   // DISPLAY DATA
-  Serial.print(mySensor.humidity, 1);
+  Serial.print(mySensor.getHumidity(), 1);
   Serial.print(",\t");
-  Serial.print(mySensor.temperature, 1);
+  Serial.print(mySensor.getTemperature(), 1);
   Serial.print(",\t");
   uint32_t duration = stop - start;
   Serial.print(duration);

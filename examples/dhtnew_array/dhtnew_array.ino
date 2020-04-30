@@ -1,14 +1,13 @@
 //
 //    FILE: dhtnew_array.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: DHTNEW library test sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
 // HISTORY:
 //
 // 0.1.0    2020-04-25 initial version
-//
-// Released to the public domain
+// 0.1.1    2020-04-30 replaced humidity and temperature with functions
 //
 // FRONT left to right
 // pin 1 : VCC
@@ -65,9 +64,9 @@ void test(int idx)
       break;
   }
   // DISPLAY DATA
-  Serial.print(ar[idx].humidity, 1);
+  Serial.print(ar[idx].getHumidity(), 1);
   Serial.print(",\t");
-  Serial.print(ar[idx].temperature, 1);
+  Serial.print(ar[idx].getTemperature(), 1);
   Serial.print(",\t");
   uint32_t duration = stop - start;
   Serial.print(duration);
