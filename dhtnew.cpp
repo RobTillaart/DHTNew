@@ -30,33 +30,35 @@ DHTNEW::DHTNEW(uint8_t pin) { _pin = pin; };
 int DHTNEW::read()
 {
 
-  if (_type != 0) 
+  if (_type != 0)     //If sensor _type is define we come in here
   {
-    if ((_type == 22) && (millis() - _lastRead < DHTLIB_DHT_READ_DELAY))
+    if ((_type == 22) && (millis() - _lastRead < DHTLIB_DHT_READ_DELAY))  //if the _type is 22 AND the delay has NOT been satisfied 
     {
-      if (_waitForReading)
+      if (_waitForReading)      //if TRUE contine (default FALSE)
        {
-        while (millis() - _lastRead < DHTLIB_DHT_READ_DELAY){}
+        while (millis() - _lastRead < DHTLIB_DHT_READ_DELAY){}  //wait until delay IS satisfied
+        return _read();     // Now get a reading since sensor is ready
        }
-      else
+      else                  //if _waitForReading is FALSE 
       {
-        return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec)
+        return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec) and _waitForReading was false 
       }
     }
-    else if ((_type == 11) && (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY))
+    else if ((_type == 11) && (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY)) //if the _type is 11 AND the delay has NOT been satisfied 
     {
-      if (_waitForReading)
+      if (_waitForReading)      //if TRUE contine (default FALSE)
        {
-        while (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY){}
+        while (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY){}  //wait until delay IS satisfied
+        return _read();     // Now get a reading since sensor is ready
        }
-      else
+      else                  //if _waitForReading is FALSE
       {
-        return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec)
+        return DHTLIB_OK;   // returns previous reading if 11 and delay not met (1 sec)
       }
     }
-    else
+    else    
     {
-      return _read();     // if delay has been met then take a reading
+      return _read();     // this runs if the the delay was satisfied and then it will take a reading
     }
   }
 
