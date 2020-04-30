@@ -22,6 +22,7 @@
 #define DHTLIB_DHT11_WAKEUP     18
 #define DHTLIB_DHT_WAKEUP       1
 
+#define DHTLIB_DHT11_READ_DELAY 1000
 #define DHTLIB_DHT_READ_DELAY   2000
 
 // max timeout is 100usec.

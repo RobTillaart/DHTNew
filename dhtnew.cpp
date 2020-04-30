@@ -29,8 +29,22 @@ DHTNEW::DHTNEW(uint8_t pin) { _pin = pin; };
 // DHTLIB_ERROR_TIMEOUT
 int DHTNEW::read()
 {
-  if (millis() - _lastRead < DHTLIB_DHT_READ_DELAY ) return DHTLIB_OK;
-  if (_type != 0) return _read();
+
+  if (_type != 0) 
+  {
+    if ((_type == 22) && (millis() - _lastRead < DHTLIB_DHT_READ_DELAY))
+    {
+      return DHTLIB_OK;   // returns previous reading if 22 and delay not met (2 sec)
+    }
+    else if ((_type == 11) && (millis() - _lastRead < DHTLIB_DHT11_READ_DELAY))
+    {
+      return DHTLIB_OK;   // returns previous reading if 11 and delay not met (1 sec)
+    }
+    else
+    {
+      return _read();     // if delay has been met then take a reading
+    }
+  } 
 
   _type = 22;
   _wakeupDelay = DHTLIB_DHT_WAKEUP;
