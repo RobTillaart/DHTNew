@@ -26,7 +26,6 @@ void setup()
 {
   Serial.begin(115200);
   Serial.println("---Starting Up---");
-  delay(2000);
   Serial.println("dhtnew_test.ino");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
