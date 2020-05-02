@@ -37,10 +37,6 @@ public:
     float getHumidity()               { return humidity; };
     float getTemperature()            { return temperature; };
 
-    // these 2 values will become private in 0.2.0 (soon)
-    float humidity;
-    float temperature;
-
     // adding offsets works well in normal range
     // might introduce under- or overflow at the ends of the sensor range
     void  setHumOffset(float offset)  { _humOffset = offset; };
@@ -60,6 +56,8 @@ private:
     uint8_t  _type = 0;
     float    _humOffset = 0.0;
     float    _tempOffset = 0.0;
+    float    humidity;
+    float    temperature;
     uint32_t _lastRead = 0;
     bool     _disableIRQ = false;
     bool     _waitForRead = false;
