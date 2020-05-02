@@ -30,6 +30,7 @@ DHTNEW has some new features compared to the DHTlib code.
 7. (0.1.7) added **waitForReading flag** (kudos to Mr-HaleYa) to let the sensor explicit 
    wait until a new value can be read.
 
+8. (0.2.0) Temperature and humidity are private now, use **getTemperature()** and **getHumidity()**
 
 ## Operation
 

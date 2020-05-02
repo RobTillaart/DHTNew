@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.1.7
+// VERSION: 0.2.0
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -14,7 +14,7 @@
 // 0.1.5  2019-01-20 fix negative temperature DHT22 - issue #120
 // 0.1.6  2020-04-09 #pragma once, readme.md, own repo
 // 0.1.7  2020-05-01 prevent premature read; add waitForReading flag (Kudo's to Mr-HaleYa), 
-//
+// 0.2.0  2020-05-02 made temperature and humidity private (Kudo's to Mr-HaleYa), 
 
 #include "dhtnew.h"
 
