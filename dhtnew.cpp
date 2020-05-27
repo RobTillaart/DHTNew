@@ -34,6 +34,13 @@
 
 #define DHTLIB_TIMEOUT (F_CPU/40000)
 
+// bits are timing based (datasheet)
+// 26-28us ==> 0
+// 70 us   ==> 1
+// threshold was (hardcoded magic number) 40
+// See https://github.com/RobTillaart/DHTNew/issues/11
+#define DHTLIB_BIT_THRESHOLD		50
+
 /////////////////////////////////////////////////////
 //
 // PUBLIC
@@ -173,7 +180,9 @@ int DHTNEW::_readSensor()
       if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT;
     }
 
-    if ((micros() - t) > 40)
+    // 26-28 us ==> 0
+    //    70 us ==> 1
+    if ((micros() - t) > DHTLIB_BIT_THRESHOLD)
     {
       _bits[idx] |= mask;
     }
