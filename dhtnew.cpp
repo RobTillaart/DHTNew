@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.2.0
+// VERSION: 0.2.1
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -14,7 +14,8 @@
 // 0.1.5  2019-01-20 fix negative temperature DHT22 - issue #120
 // 0.1.6  2020-04-09 #pragma once, readme.md, own repo
 // 0.1.7  2020-05-01 prevent premature read; add waitForReading flag (Kudo's to Mr-HaleYa), 
-// 0.2.0  2020-05-02 made temperature and humidity private (Kudo's to Mr-HaleYa), 
+// 0.2.0  2020-05-02 made temperature and humidity private (Kudo's to Mr-HaleYa),
+// 0.2.1  2020-05-27 Fix #11 - Adjust bit timing threshold
 
 #include "dhtnew.h"
 
@@ -33,6 +34,13 @@
 // so by dividing F_CPU by 40000 we "fail" as fast as possible
 
 #define DHTLIB_TIMEOUT (F_CPU/40000)
+
+// bits are timing based (datasheet)
+// 26-28us ==> 0
+// 70 us   ==> 1
+// threshold was (hardcoded magic number) 40
+// See https://github.com/RobTillaart/DHTNew/issues/11
+#define DHTLIB_BIT_THRESHOLD		50
 
 /////////////////////////////////////////////////////
 //
@@ -173,7 +181,9 @@ int DHTNEW::_readSensor()
       if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT;
     }
 
-    if ((micros() - t) > 40)
+    // 26-28 us ==> 0
+    //    70 us ==> 1
+    if ((micros() - t) > DHTLIB_BIT_THRESHOLD)
     {
       _bits[idx] |= mask;
     }

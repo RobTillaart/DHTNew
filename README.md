@@ -32,6 +32,8 @@ DHTNEW has some new features compared to the DHTlib code.
 
 8. (0.2.0) Temperature and humidity are private now, use **getTemperature()** and **getHumidity()**
 
+9. (0.2.1) Adjusted the bit timing threshold to work around issue #11 
+
 ## Operation
 
 See examples
