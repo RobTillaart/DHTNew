@@ -13,7 +13,7 @@
 // 0.1.4  2018-04-03 add get-/setDisableIRQ(bool b)
 // 0.1.5  2019-01-20 fix negative temperature DHT22 - issue #120
 // 0.1.6  2020-04-09 #pragma once, readme.md, own repo
-// 0.1.7  2020-05-01 prevent premature read; add waitForReading flag (Kudo's to Mr-HaleYa), 
+// 0.1.7  2020-05-01 prevent premature read; add waitForReading flag (Kudo's to Mr-HaleYa),
 // 0.2.0  2020-05-02 made temperature and humidity private (Kudo's to Mr-HaleYa),
 // 0.2.1  2020-05-27 Fix #11 - Adjust bit timing threshold
 
@@ -40,7 +40,7 @@
 // 70 us   ==> 1
 // threshold was (hardcoded magic number) 40
 // See https://github.com/RobTillaart/DHTNew/issues/11
-#define DHTLIB_BIT_THRESHOLD		50
+#define DHTLIB_BIT_THRESHOLD          50
 
 /////////////////////////////////////////////////////
 //
@@ -56,14 +56,14 @@ int DHTNEW::read()
 {
   if (_type != 0)
   {
-    uint16_t readDelay = DHTLIB_DHT22_READ_DELAY;  	       // assume DHT22 compatible
+    uint16_t readDelay = DHTLIB_DHT22_READ_DELAY;         // assume DHT22 compatible
     if (_type == 11) readDelay = DHTLIB_DHT11_READ_DELAY;
 
     while (millis() - _lastRead < readDelay)
-	{
-       if (!_waitForRead) return DHTLIB_OK;
-	   yield();
-	}
+    {
+      if (!_waitForRead) return DHTLIB_OK;
+      yield();
+    }
     return _read();
   }
 
@@ -91,7 +91,7 @@ int DHTNEW::_read()
   if (_disableIRQ) noInterrupts();
   int rv = _readSensor();
   if (_disableIRQ) interrupts();
-   _lastRead = millis();
+  _lastRead = millis();
 
   if (rv != DHTLIB_OK)
   {
@@ -194,6 +194,11 @@ int DHTNEW::_readSensor()
       idx++;
     }
   }
+
+  // CATCH RIGHTSHIFT BUG ESP (only 1 single bit)
+  // humidity is max 1000 = 0x0E8 for DHT22 and 0x6400 for DHT11
+  // so most significant bit may never be set.
+  if (_bits[0] & 0x80) return DHTLIB_ERROR_BIT_SHIFT;
 
   return DHTLIB_OK;
 }

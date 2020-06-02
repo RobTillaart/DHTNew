@@ -15,5 +15,5 @@
   },
   "version":"0.2.1",
   "frameworks": "arduino",
-  "platforms": "*",
+  "platforms": "*"
 }
