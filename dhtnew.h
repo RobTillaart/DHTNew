@@ -22,6 +22,15 @@
 #define DHTLIB_INVALID_VALUE    -999
 
 
+// bits are timing based (datasheet)
+// 26-28us ==> 0
+// 70 us   ==> 1
+// See https://github.com/RobTillaart/DHTNew/issues/11
+#ifndef DHTLIB_BIT_THRESHOLD
+#define DHTLIB_BIT_THRESHOLD          50
+#endif
+
+
 class DHTNEW
 {
 public:

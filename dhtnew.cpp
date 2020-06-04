@@ -35,12 +35,6 @@
 
 #define DHTLIB_TIMEOUT (F_CPU/40000)
 
-// bits are timing based (datasheet)
-// 26-28us ==> 0
-// 70 us   ==> 1
-// threshold was (hardcoded magic number) 40
-// See https://github.com/RobTillaart/DHTNew/issues/11
-#define DHTLIB_BIT_THRESHOLD          50
 
 /////////////////////////////////////////////////////
 //
