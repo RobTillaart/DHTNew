@@ -40,7 +40,13 @@
 //
 // PUBLIC
 //
-DHTNEW::DHTNEW(uint8_t pin) { _pin = pin; };
+DHTNEW::DHTNEW(uint8_t pin)
+{
+  _pin = pin;
+  // Data-bus's free status is high voltage level.
+  pinMode(_pin, OUTPUT);
+  digitalWrite(_pin, HIGH);
+};
 
 void DHTNEW::setType(uint8_t type)
 {
@@ -93,6 +99,9 @@ int DHTNEW::_read()
   if (_disableIRQ) noInterrupts();
   int rv = _readSensor();
   if (_disableIRQ) interrupts();
+  // Data-bus's free status is high voltage level.
+  pinMode(_pin, OUTPUT);
+  digitalWrite(_pin, HIGH);
   _lastRead = millis();
 
   if (rv != DHTLIB_OK)
