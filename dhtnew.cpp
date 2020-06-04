@@ -48,6 +48,14 @@
 //
 DHTNEW::DHTNEW(uint8_t pin) { _pin = pin; };
 
+void DHTNEW::setType(uint8_t type)
+{
+  if ((type == 0) || (type == 11) || (type == 22))
+  {
+    _type = type;
+  }
+}
+
 // return values:
 // DHTLIB_OK
 // DHTLIB_ERROR_CHECKSUM

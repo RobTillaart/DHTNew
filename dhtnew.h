@@ -29,8 +29,9 @@ public:
     DHTNEW(uint8_t pin);
 
     // 0 = unknown, 11 or 22
-    int   getType()                   { return _type; };
-    int   read();
+    uint8_t getType()                 { return _type; };
+    void setType(uint8_t type = 0);
+    int read();
 
     // lastRead is in MilliSeconds since start sketch
     uint32_t lastRead()               { return _lastRead; };
