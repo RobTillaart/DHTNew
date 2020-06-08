@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.2.1
+// VERSION: 0.2.2
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -16,6 +16,7 @@
 // 0.1.7  2020-05-01 prevent premature read; add waitForReading flag (Kudo's to Mr-HaleYa),
 // 0.2.0  2020-05-02 made temperature and humidity private (Kudo's to Mr-HaleYa),
 // 0.2.1  2020-05-27 Fix #11 - Adjust bit timing threshold
+// 0.2.2  2020-06-08 added ERROR_SENSOR_NOT_READY and differentiate timeout errors
 
 #include "dhtnew.h"
 
@@ -23,16 +24,25 @@
 #define DHTLIB_DHT11_WAKEUP        18
 #define DHTLIB_DHT_WAKEUP          1
 
-// datasheet state 1000 and 2000,// experiments [Mr-HaleYa] indicate a bit larger value to be robust.
+// datasheet state 1000 and 2000,
+// experiments [Mr-HaleYa] indicate 1250 and 2250 to be robust.
+// additional tests with ESP32 ==> 1250 - 2500 
 #define DHTLIB_DHT11_READ_DELAY    1250
 #define DHTLIB_DHT22_READ_DELAY    2250
 
-// max timeout is 100usec.
-// For a 16Mhz proc that is max 1600 clock cycles
+// max timeout is 100 usec.
 // loops using TIMEOUT use at least 4 clock cycli
-// so 100 us takes max 400 loops
-// so by dividing F_CPU by 40000 we "fail" as fast as possible
-
+// - read IO
+// - compare IO
+// - compare loopcounter
+// - decrement loopcounter
+//
+// For a 16Mhz (UNO) 100 usec == 1600 clock cycles
+// ==> 100 usec takes max 400 loops
+// for a 240MHz (ESP32) 100 usec == 24000 clock cycles
+// ==> 100 usec takes max 6000 loops
+//
+// By dividing F_CPU by 40000 we "fail" as fast as possible
 #define DHTLIB_TIMEOUT (F_CPU/40000)
 
 
@@ -96,9 +106,10 @@ int DHTNEW::read()
 int DHTNEW::_read()
 {
   // READ VALUES
-  if (_disableIRQ) noInterrupts();
+  if (_disableIRQ) { noInterrupts(); }
   int rv = _readSensor();
-  if (_disableIRQ) interrupts();
+  if (_disableIRQ) { interrupts(); }
+
   // Data-bus's free status is high voltage level.
   pinMode(_pin, OUTPUT);
   digitalWrite(_pin, HIGH);
@@ -166,13 +177,14 @@ int DHTNEW::_readSensor()
   uint16_t loopCnt = DHTLIB_TIMEOUT;
   while(digitalRead(_pin) == LOW)
   {
-    if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT;
+    if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_A;
   }
 
+  // If sensor stays HIGH >> 80 usec it is not ready yet.
   loopCnt = DHTLIB_TIMEOUT;
   while(digitalRead(_pin) == HIGH)
   {
-    if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT;
+    if (--loopCnt == 0) return DHTLIB_ERROR_SENSOR_NOT_READY;
   }
 
   // READ THE OUTPUT - 40 BITS => 5 BYTES
@@ -181,7 +193,7 @@ int DHTNEW::_readSensor()
     loopCnt = DHTLIB_TIMEOUT;
     while(digitalRead(_pin) == LOW)
     {
-      if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT;
+      if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_C;
     }
 
     uint32_t t = micros();
@@ -189,7 +201,7 @@ int DHTNEW::_readSensor()
     loopCnt = DHTLIB_TIMEOUT;
     while(digitalRead(_pin) == HIGH)
     {
-      if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT;
+      if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_D;
     }
 
     // 26-28 us ==> 0
@@ -205,6 +217,14 @@ int DHTNEW::_readSensor()
       idx++;
     }
   }
+  // After the 40 bits the sensor pulls down the line for 50 usec
+  // This library does not wait for that to happen.
+  // loopCnt = DHTLIB_TIMEOUT;
+  // while(digitalRead(_pin) == LOW)
+  // {
+  //   if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUTC;
+  // }
+
 
   // CATCH RIGHTSHIFT BUG ESP (only 1 single bit)
   // humidity is max 1000 = 0x0E8 for DHT22 and 0x6400 for DHT11
