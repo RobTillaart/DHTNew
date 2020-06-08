@@ -16,7 +16,7 @@
 
 #include <dhtnew.h>
 
-DHTNEW mySensor(6);
+DHTNEW mySensor(16);
 
 void setup()
 {
