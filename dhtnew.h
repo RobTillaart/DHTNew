@@ -9,14 +9,13 @@
 // HISTORY:
 // see dhtnew.cpp file
 
-
 // DHT PIN layout from left to right
 // =================================
 // FRONT : DESCRIPTION  
 // pin 1 : VCC
 // pin 2 : DATA
 // pin 3 : Not Connected
-// PIN 4 : GND
+// pin 4 : GND
 
 #include "Arduino.h"
 
@@ -29,6 +28,7 @@
 #define DHTLIB_ERROR_SENSOR_NOT_READY    -4
 #define DHTLIB_ERROR_TIMEOUT_C           -5
 #define DHTLIB_ERROR_TIMEOUT_D           -6
+#define DHTLIB_ERROR_TIMEOUT_B           -7
 
 #define DHTLIB_INVALID_VALUE    -999
 
@@ -67,9 +67,6 @@ public:
     float getHumOffset()              { return _humOffset; };
     float getTempOffset()             { return _tempOffset; };
 
-    bool getDisableIRQ()              { return _disableIRQ; };
-    void setDisableIRQ(bool b )       { _disableIRQ = b; };
-
     bool getWaitForReading()          { return _waitForRead; };
     void setWaitForReading(bool b )   { _waitForRead = b; };
 
@@ -86,7 +83,6 @@ private:
     float    _humidity;
     float    _temperature;
     uint32_t _lastRead = 0;
-    bool     _disableIRQ = false;
     bool     _waitForRead = false;
     uint16_t _readDelay = 0;
 

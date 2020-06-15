@@ -1,15 +1,13 @@
 //
-//    FILE: dhtnew_array.ino
+//    FILE: dhtnew_setReadDelay.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.3
-// PURPOSE: DHTNEW library test sketch for Arduino
+// VERSION: 0.1.1
+// PURPOSE: DHTNEW library waitForRead example sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
-
+//
 // HISTORY:
-// 0.1.0    2020-04-25 initial version
-// 0.1.1    2020-04-30 replaced humidity and temperature with functions
-// 0.1.2    2020-06-08 improved error handling
-// 0.1.3    2020-06-15 match 0.3.0 error handling
+// 0.1.0    2020-06-12 initial version
+// 0.1.1    2020-06-15 match 0.3.0 error handling
 //
 // DHT PIN layout from left to right
 // =================================
@@ -21,37 +19,61 @@
 
 #include <dhtnew.h>
 
-DHTNEW kitchen(2);
-DHTNEW living(3);
-DHTNEW outside(4);
-
-DHTNEW ar[3] = { kitchen, living, outside };
+DHTNEW mySensor(6);
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("dhtnew_test.ino");
+  Serial.println(__FILE__);
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
   Serial.println();
+  
+  delay(2000);  // boot time
 
-  for (int idx = 0; idx < 3; idx++)
+  uint16_t rd = 2000;
+  uint16_t step = rd / 2;
+
+  do
   {
-    test(idx);
+    mySensor.setReadDelay(rd);
+    int chk = mySensor.read();
+	
+    Serial.print("ReadDelay (ms): ");
+    Serial.print(mySensor.getReadDelay());
+    Serial.print("\t T: ");
+    Serial.print(mySensor.getTemperature(), 1);
+    // Serial.print("\t H: ");
+    // Serial.print(mySensor.getHumidity(), 1);
+    Serial.print("\t");
+    printStatus(chk);
+
+	if  (chk == DHTLIB_OK) rd -= step;
+	else rd += step;
+	step /= 2;
   }
+  while (step >= 10);
+  
+  // set safety margin of 100 uSec
+  rd += 100;
+  mySensor.setReadDelay(rd);
+  Serial.print("\nFast readDelay set to (ms) : ");
+  Serial.print(mySensor.getReadDelay());
+  Serial.println("Duration test started");
 }
 
 void loop()
 {
+  // Note: the library prevents reads faster than readDelay...
+  //       it will return previous values for T & H
+  int chk = mySensor.read();
+  Serial.print(millis());
+  Serial.print("\t");
+  printStatus(chk);
 }
 
-void test(int idx)
+void printStatus(int chk)
 {
-  // READ DATA
-  uint32_t start = micros();
-  int chk = ar[idx].read();
-  uint32_t stop = micros();
-
   switch (chk)
   {
     case DHTLIB_OK:
@@ -84,17 +106,7 @@ void test(int idx)
       Serial.print(",\t");
       break;
   }
-
-  // DISPLAY DATA
-  Serial.print(ar[idx].getHumidity(), 1);
-  Serial.print(",\t");
-  Serial.print(ar[idx].getTemperature(), 1);
-  Serial.print(",\t");
-  uint32_t duration = stop - start;
-  Serial.print(duration);
-  Serial.print(",\t");
-  Serial.println(ar[idx].getType());
-  delay(500);
+  Serial.println();
 }
 
 // -- END OF FILE --

@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew_adaptive_delay.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.1.3
 // PURPOSE: DHTNEW library test sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
 //
@@ -9,12 +9,15 @@
 // 0.1.0    2018-08-06 initial version
 // 0.1.1    2020-04-30 replaced humidity and temperature with functions
 // 0.1.2    2020-06-08 redid 0.1.1 testing and fix + improved error handling
+// 0.1.3    2020-06-15 match 0.3.0 error handling
 //
-// FRONT left 2 right
+// DHT PIN layout from left to right
+// =================================
+// FRONT : DESCRIPTION  
 // pin 1 : VCC
 // pin 2 : DATA
-// pin 3 : NC
-// PIN 4 : GND
+// pin 3 : Not Connected
+// pin 4 : GND
 
 // Adaptive delay makes no sesne anymore as the DHTNEW lib catches reads that
 // are done faster than READ_DELAY apart (see dhtnew.cpp file).
@@ -107,6 +110,9 @@ void test()
     case DHTLIB_ERROR_TIMEOUT_A:
       Serial.print("Time out A error,\t");
       dht_delay += 10;
+      break;
+    case DHTLIB_ERROR_TIMEOUT_B:
+      Serial.print("Time out B error,\t");
       break;
     case DHTLIB_ERROR_TIMEOUT_C:
       Serial.print("Time out C error,\t");

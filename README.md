@@ -34,6 +34,24 @@ DHTNEW has some new features compared to the DHTlib code.
 
 9. (0.2.1) Adjusted the bit timing threshold to work around issue #11 
 
+10. (0.2.2) added **ERROR_SENSOR_NOT_READY** and differentiated timeout errors.
+
+11. (0.3.0) removed interrupt flag, now the library always disables interrupts during 
+the clocking of the bits.
+Added getReadDelay & setReadDelay to tune reading interval. Check the example code.
+Adjusted the timing in the wake up part of the protocol. 
+Added more comments to describe the protocol.
+
+## DHT PIN layout from left to right
+
+| FRONT | | DESCRIPTION  |
+|:----|:----:|:----|
+| pin 1 | | VCC           |
+| pin 2 | | DATA          |
+| pin 3 | | Not Connected |
+| pin 4 | | GND           |
+						  |
+
 ## Operation
 
 See examples

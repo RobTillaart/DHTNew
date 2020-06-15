@@ -17,8 +17,6 @@ setTempOffset	KEYWORD2
 getHumOffset	KEYWORD2
 getTempOffset	KEYWORD2
 
-getDisableIRQ	KEYWORD2
-setDisableIRQ	KEYWORD2
 getWaitForReading	KEYWORD2
 setWaitForReading	KEYWORD2
 

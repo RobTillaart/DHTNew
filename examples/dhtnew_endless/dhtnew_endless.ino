@@ -1,16 +1,21 @@
 //
 //    FILE: DHT_endless.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: demo
 //    DATE: 2020-06-04
 //    (c) : MIT
 //
-// FRONT left 2 right
+// 0.1.0    2020-06-04 initial version
+// 0.1.1    2020-06-15 match 0.3.0 error handling
+//
+// DHT PIN layout from left to right
+// =================================
+// FRONT : DESCRIPTION  
 // pin 1 : VCC
 // pin 2 : DATA
-// pin 3 : NC
-// PIN 4 : GND
+// pin 3 : Not Connected
+// pin 4 : GND
 
 #include <dhtnew.h>
 
@@ -55,6 +60,9 @@ void loop()
       break;
     case DHTLIB_ERROR_TIMEOUT_A:
       Serial.print("TOA,\t");
+      break;
+    case DHTLIB_ERROR_TIMEOUT_B:
+      Serial.print("TOB,\t");
       break;
     case DHTLIB_ERROR_TIMEOUT_C:
       Serial.print("TOC,\t");
