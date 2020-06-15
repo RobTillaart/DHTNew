@@ -2,17 +2,25 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.2
+// VERSION: 0.3.0
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
 // HISTORY:
 // see dhtnew.cpp file
-//
 
-#include <Arduino.h>
 
-#define DHTNEW_LIB_VERSION "0.2.2"
+// DHT PIN layout from left to right
+// =================================
+// FRONT : DESCRIPTION  
+// pin 1 : VCC
+// pin 2 : DATA
+// pin 3 : Not Connected
+// PIN 4 : GND
+
+#include "Arduino.h"
+
+#define DHTNEW_LIB_VERSION "0.3.0"
 
 #define DHTLIB_OK                         0
 #define DHTLIB_ERROR_CHECKSUM            -1
@@ -49,8 +57,8 @@ public:
     uint32_t lastRead()               { return _lastRead; };
 
     // preferred interface
-    float getHumidity()               { return humidity; };
-    float getTemperature()            { return temperature; };
+    float getHumidity()               { return _humidity; };
+    float getTemperature()            { return _temperature; };
 
     // adding offsets works well in normal range
     // might introduce under- or overflow at the ends of the sensor range
@@ -65,17 +73,22 @@ public:
     bool getWaitForReading()          { return _waitForRead; };
     void setWaitForReading(bool b )   { _waitForRead = b; };
 
+    // set readDelay to 0 will reset to datasheet values
+    uint16_t getReadDelay()           { return _readDelay; };
+    void setReadDelay(uint16_t rd = 0){ _readDelay = rd; };
+
 private:
     uint8_t  _pin = 0;
     uint8_t  _wakeupDelay = 0;
     uint8_t  _type = 0;
     float    _humOffset = 0.0;
     float    _tempOffset = 0.0;
-    float    humidity;
-    float    temperature;
+    float    _humidity;
+    float    _temperature;
     uint32_t _lastRead = 0;
     bool     _disableIRQ = false;
     bool     _waitForRead = false;
+    uint16_t _readDelay = 0;
 
     uint8_t  _bits[5];  // buffer to receive data
     int      _read();
