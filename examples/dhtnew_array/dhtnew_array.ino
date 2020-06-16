@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew_array.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.1.3
 // PURPOSE: DHTNEW library test sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
 
@@ -9,25 +9,28 @@
 // 0.1.0    2020-04-25 initial version
 // 0.1.1    2020-04-30 replaced humidity and temperature with functions
 // 0.1.2    2020-06-08 improved error handling
+// 0.1.3    2020-06-15 match 0.3.0 error handling
 //
-// FRONT left to right
+// DHT PIN layout from left to right
+// =================================
+// FRONT : DESCRIPTION
 // pin 1 : VCC
 // pin 2 : DATA
-// pin 3 : NC
-// PIN 4 : GND
+// pin 3 : Not Connected
+// pin 4 : GND
 
 #include <dhtnew.h>
 
-DHTNEW kitchen(2);
-DHTNEW living(3);
-DHTNEW outside(4);
+DHTNEW kitchen(4);
+DHTNEW living(5);
+DHTNEW outside(6);
 
 DHTNEW ar[3] = { kitchen, living, outside };
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("dhtnew_test.ino");
+  Serial.println("dhtnew_array.ino");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
   Serial.println();
@@ -40,6 +43,11 @@ void setup()
 
 void loop()
 {
+  for (int idx = 0; idx < 3; idx++)
+  {
+    test(idx);
+  }
+  Serial.println();
 }
 
 void test(int idx)
@@ -48,6 +56,9 @@ void test(int idx)
   uint32_t start = micros();
   int chk = ar[idx].read();
   uint32_t stop = micros();
+
+  Serial.print(idx);
+  Serial.print(",\t");
 
   switch (chk)
   {
@@ -59,6 +70,9 @@ void test(int idx)
       break;
     case DHTLIB_ERROR_TIMEOUT_A:
       Serial.print("Time out A error,\t");
+      break;
+    case DHTLIB_ERROR_TIMEOUT_B:
+      Serial.print("Time out B error,\t");
       break;
     case DHTLIB_ERROR_TIMEOUT_C:
       Serial.print("Time out C error,\t");
