@@ -19,7 +19,8 @@
 // pin 3 : Not Connected
 // pin 4 : GND
 
-// Adaptive delay makes no sesne anymore as the DHTNEW lib catches reads that
+// Note:
+// Adaptive delay makes no sense anymore as the DHTNEW lib catches reads that
 // are done faster than READ_DELAY apart (see dhtnew.cpp file).
 // that said it is the goal to get this adaptibility into the library one day.
 // A way to do this is to add a function auto_calibrate() that finds the timing

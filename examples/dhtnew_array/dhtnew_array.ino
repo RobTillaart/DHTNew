@@ -13,7 +13,7 @@
 //
 // DHT PIN layout from left to right
 // =================================
-// FRONT : DESCRIPTION  
+// FRONT : DESCRIPTION
 // pin 1 : VCC
 // pin 2 : DATA
 // pin 3 : Not Connected
@@ -21,16 +21,16 @@
 
 #include <dhtnew.h>
 
-DHTNEW kitchen(2);
-DHTNEW living(3);
-DHTNEW outside(4);
+DHTNEW kitchen(4);
+DHTNEW living(5);
+DHTNEW outside(6);
 
 DHTNEW ar[3] = { kitchen, living, outside };
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("dhtnew_test.ino");
+  Serial.println("dhtnew_array.ino");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
   Serial.println();
@@ -43,6 +43,11 @@ void setup()
 
 void loop()
 {
+  for (int idx = 0; idx < 3; idx++)
+  {
+    test(idx);
+  }
+  Serial.println();
 }
 
 void test(int idx)
@@ -51,6 +56,9 @@ void test(int idx)
   uint32_t start = micros();
   int chk = ar[idx].read();
   uint32_t stop = micros();
+
+  Serial.print(idx);
+  Serial.print(",\t");
 
   switch (chk)
   {

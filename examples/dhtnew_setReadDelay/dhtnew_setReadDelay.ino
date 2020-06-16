@@ -11,7 +11,7 @@
 //
 // DHT PIN layout from left to right
 // =================================
-// FRONT : DESCRIPTION  
+// FRONT : DESCRIPTION
 // pin 1 : VCC
 // pin 2 : DATA
 // pin 3 : Not Connected
@@ -19,7 +19,7 @@
 
 #include <dhtnew.h>
 
-DHTNEW mySensor(6);
+DHTNEW mySensor(16);
 
 void setup()
 {
@@ -28,38 +28,39 @@ void setup()
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHTNEW_LIB_VERSION);
   Serial.println();
-  
+
   delay(2000);  // boot time
 
-  uint16_t rd = 2000;
-  uint16_t step = rd / 2;
+  mySensor.setWaitForReading(true);
 
-  do
+  uint16_t rd = 2000;
+  uint16_t step = 2000;
+
+  while (step)
   {
+    step /= 2;
     mySensor.setReadDelay(rd);
     int chk = mySensor.read();
-	
+
     Serial.print("ReadDelay (ms): ");
     Serial.print(mySensor.getReadDelay());
     Serial.print("\t T: ");
     Serial.print(mySensor.getTemperature(), 1);
-    // Serial.print("\t H: ");
-    // Serial.print(mySensor.getHumidity(), 1);
+    Serial.print("\t H: ");
+    Serial.print(mySensor.getHumidity(), 1);
     Serial.print("\t");
     printStatus(chk);
 
-	if  (chk == DHTLIB_OK) rd -= step;
-	else rd += step;
-	step /= 2;
+    if (chk == DHTLIB_OK) rd -= step;
+    else rd += step;
   }
-  while (step >= 10);
-  
-  // set safety margin of 100 uSec
+
+  // safety margin of 100 uSec
   rd += 100;
   mySensor.setReadDelay(rd);
-  Serial.print("\nFast readDelay set to (ms) : ");
+  Serial.print("\nreadDelay set to (ms) : ");
   Serial.print(mySensor.getReadDelay());
-  Serial.println("Duration test started");
+  Serial.println("\n\nDuration test started");
 }
 
 void loop()
@@ -68,6 +69,12 @@ void loop()
   //       it will return previous values for T & H
   int chk = mySensor.read();
   Serial.print(millis());
+  Serial.print("\t");
+  Serial.print(mySensor.getReadDelay());
+  Serial.print("\t T: ");
+  Serial.print(mySensor.getTemperature(), 1);
+  Serial.print("\t H: ");
+  Serial.print(mySensor.getHumidity(), 1);
   Serial.print("\t");
   printStatus(chk);
 }

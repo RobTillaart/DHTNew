@@ -4,6 +4,7 @@
 // VERSION: 0.1.2
 // PURPOSE: DHTNEW library test sketch
 //     URL: https://github.com/RobTillaart/DHTNew
+//
 // HISTORY:
 // 0.1.0    2018-01-08 initial version
 // 0.1.1    2020-04-30 replaced humidity and temperature with functions
@@ -27,8 +28,16 @@ void setup()
   Serial.println(__FILE__);
   Serial.println();
 
+  Serial.println("BEFORE OFFSET");
+  mySensor.read();
+  Serial.print(mySensor.getHumidity(), 1);
+  Serial.print("\t");
+  Serial.println(mySensor.getTemperature(), 1);
+
   mySensor.setHumOffset(10);
-  mySensor.setTempOffset(-1.5);
+  mySensor.setTempOffset(-3.5);
+
+  Serial.println("AFTER OFFSET");
 }
 
 void loop()
