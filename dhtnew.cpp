@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.3.0
+// VERSION: 0.3.1
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -19,7 +19,7 @@
 // 0.2.2  2020-06-08 added ERROR_SENSOR_NOT_READY and differentiate timeout errors
 // 0.3.0  2020-06-12 added getReadDelay & setReadDelay to tune reading interval
 //                   removed get/setDisableIRQ; adjusted wakeup timing; refactor
-//
+// 0.3.1  2020-07-08 added powerUp() powerDown();
 
 #include "dhtnew.h"
 
@@ -57,10 +57,10 @@
 //
 DHTNEW::DHTNEW(uint8_t pin)
 {
-  _pin = pin;
+  _dataPin = pin;
   // Data-bus's free status is high voltage level.
-  pinMode(_pin, OUTPUT);
-  digitalWrite(_pin, HIGH);
+  pinMode(_dataPin, OUTPUT);
+  digitalWrite(_dataPin, HIGH);
   _readDelay = 0;
 };
 
@@ -128,8 +128,8 @@ int DHTNEW::_read()
   interrupts();
 
   // Data-bus's free status is high voltage level.
-  pinMode(_pin, OUTPUT);
-  digitalWrite(_pin, HIGH);
+  pinMode(_dataPin, OUTPUT);
+  digitalWrite(_dataPin, HIGH);
   _lastRead = millis();
 
   if (rv != DHTLIB_OK)
@@ -166,6 +166,19 @@ int DHTNEW::_read()
   return DHTLIB_OK;
 }
 
+void DHTNEW::powerUp()
+{
+  digitalWrite(_dataPin, HIGH);
+  // do a dummy read to sync the sensor
+  read();
+};
+
+void DHTNEW::powerDown()
+{
+  digitalWrite(_dataPin, LOW);
+}
+
+
 /////////////////////////////////////////////////////
 //
 // PRIVATE
@@ -193,34 +206,34 @@ int DHTNEW::_readSensor()
   yield();  
 
   // REQUEST SAMPLE - SEND WAKEUP TO SENSOR
-  pinMode(_pin, OUTPUT);
-  digitalWrite(_pin, LOW);
+  pinMode(_dataPin, OUTPUT);
+  digitalWrite(_dataPin, LOW);
   // add 10% extra for timing inaccuracies in sensor.
   delayMicroseconds(_wakeupDelay * 1100UL);
 
   // HOST GIVES CONTROL TO SENSOR
-  pinMode(_pin, INPUT_PULLUP);
+  pinMode(_dataPin, INPUT_PULLUP);
 
   // DISABLE INTERRUPTS when clock in the bits
   noInterrupts();
 
   // SENSOR PULLS LOW after 20-40 us  => if stays HIGH ==> device not ready
   uint16_t loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_pin) == HIGH)
+  while(digitalRead(_dataPin) == HIGH)
   {
     if (--loopCnt == 0) return DHTLIB_ERROR_SENSOR_NOT_READY;
   }
 
   // SENSOR STAYS LOW for ~80 us => or TIMEOUT
   loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_pin) == LOW)
+  while(digitalRead(_dataPin) == LOW)
   {
     if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_A;
   }
 
   // SENSOR STAYS HIGH for ~80 us => or TIMEOUT
   loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_pin) == HIGH)
+  while(digitalRead(_dataPin) == HIGH)
   {
     if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_B;
   }
@@ -233,7 +246,7 @@ int DHTNEW::_readSensor()
   {
     // EACH BIT START WITH ~50 us LOW
     loopCnt = DHTLIB_TIMEOUT;
-    while(digitalRead(_pin) == LOW)
+    while(digitalRead(_dataPin) == LOW)
     {
       if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_C;
     }
@@ -243,7 +256,7 @@ int DHTNEW::_readSensor()
     //    70 us ==> 1
     uint32_t t = micros();
     loopCnt = DHTLIB_TIMEOUT;
-    while(digitalRead(_pin) == HIGH)
+    while(digitalRead(_dataPin) == HIGH)
     {
       if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_D;
     }
@@ -263,7 +276,7 @@ int DHTNEW::_readSensor()
   // After 40 bits the sensor pulls the line LOW for 50 us
   // TODO: should we wait?
   loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_pin) == LOW)
+  while(digitalRead(_dataPin) == LOW)
   {
     if (--loopCnt == 0) break; // return DHTLIB_ERROR_TIMEOUT_E;
   }

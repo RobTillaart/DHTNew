@@ -2,7 +2,7 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.3.0
+// VERSION: 0.3.1
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -19,7 +19,7 @@
 
 #include "Arduino.h"
 
-#define DHTNEW_LIB_VERSION "0.3.0"
+#define DHTNEW_LIB_VERSION          "0.3.1"
 
 #define DHTLIB_OK                         0
 #define DHTLIB_ERROR_CHECKSUM            -1
@@ -74,8 +74,13 @@ public:
     uint16_t getReadDelay()           { return _readDelay; };
     void setReadDelay(uint16_t rd = 0){ _readDelay = rd; };
 
+    // minimal support for low power applications.
+    // after powerUp one must wait up to two seconds.
+    void powerUp();
+    void powerDown();
+
 private:
-    uint8_t  _pin = 0;
+    uint8_t  _dataPin = 0;
     uint8_t  _wakeupDelay = 0;
     uint8_t  _type = 0;
     float    _humOffset = 0.0;

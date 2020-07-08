@@ -25,22 +25,23 @@ DHTNEW has some new features compared to the DHTlib code.
    (e.g. 1 second by default) to give more stable results.
 5. Added **interrupt enable / disable flag** to prevent interrupts disturb timing of DHT protocol.
    Be aware that this may affect other parts of your application.
-
 6. (0.1.7) added an automatic check of lastRead in the read call. If request a read to fast it will just return OK.
 7. (0.1.7) added **waitForReading flag** (kudos to Mr-HaleYa) to let the sensor explicitly 
    wait until a new value can be read.
-
 8. (0.2.0) Temperature and humidity are private now, use **getTemperature()** and **getHumidity()**
-
 9. (0.2.1) Adjusted the bit timing threshold to work around issue #11 
-
 10. (0.2.2) added **ERROR_SENSOR_NOT_READY** and differentiated timeout errors.
-
-11. (0.3.0) removed interrupt flag, now the library always disables interrupts during 
+11. (0.3.0)  
+removed interrupt flag, now the library always disables interrupts during 
 the clocking of the bits.
 Added getReadDelay & setReadDelay to tune reading interval. Check the example code.
 Adjusted the timing in the wake up part of the protocol. 
 Added more comments to describe the protocol.
+12. (0.3.1)  
+added **powerDown()** and **powerUp()** for low power applications. Note that after **powerUp()**
+the user must wait for two seconds before doing a read(). Just like after a (re)boot.  
+Note: The lib does not (yet) control the power pin of the sensor. 
+Discussion see https://github.com/RobTillaart/DHTNew/issues/13
 
 ## DHT PIN layout from left to right
 

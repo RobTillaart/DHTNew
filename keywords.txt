@@ -20,6 +20,9 @@ getTempOffset	KEYWORD2
 getWaitForReading	KEYWORD2
 setWaitForReading	KEYWORD2
 
+powerUp	KEYWORD2
+powerDown	KEYWORD2
+
 # Instances (KEYWORD2)
 
 # Constants (LITERAL1)
