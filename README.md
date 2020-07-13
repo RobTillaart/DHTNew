@@ -23,7 +23,7 @@ DHTNEW has some new features compared to the DHTlib code.
    should have 1-2 seconds between reads according to specification. 
    In the future, this functionality could be inside the library by setting a time threshold
    (e.g. 1 second by default) to give more stable results.
-5. Added **interrupt enable / disable flag** to prevent interrupts disturb timing of DHT protocol.
+5. Added **interrupt enable/disable flag** to prevent interrupts disturb timing of DHT protocol.
    Be aware that this may affect other parts of your application.
 6. (0.1.7) added an automatic check of lastRead in the read call. If request a read to fast it will just return OK.
 7. (0.1.7) added **waitForReading flag** (kudos to Mr-HaleYa) to let the sensor explicitly 
@@ -35,7 +35,7 @@ DHTNEW has some new features compared to the DHTlib code.
 removed interrupt flag, now the library always disables interrupts during 
 the clocking of the bits.
 Added getReadDelay & setReadDelay to tune reading interval. Check the example code.
-Adjusted the timing in the wake up part of the protocol. 
+Adjusted the timing in the wake-up part of the protocol. 
 Added more comments to describe the protocol.
 12. (0.3.1)  
 added **powerDown()** and **powerUp()** for low power applications. Note that after **powerUp()**
@@ -51,7 +51,6 @@ Discussion see https://github.com/RobTillaart/DHTNew/issues/13
 | pin 2 | | DATA          |
 | pin 3 | | Not Connected |
 | pin 4 | | GND           |
-						  |
 
 ## Operation
 
