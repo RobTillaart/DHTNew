@@ -2,7 +2,7 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.3.1
+// VERSION: 0.3.2
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -19,7 +19,7 @@
 
 #include "Arduino.h"
 
-#define DHTNEW_LIB_VERSION          "0.3.1"
+#define DHTNEW_LIB_VERSION          "0.3.2"
 
 #define DHTLIB_OK                         0
 #define DHTLIB_ERROR_CHECKSUM            -1
@@ -30,7 +30,9 @@
 #define DHTLIB_ERROR_TIMEOUT_D           -6
 #define DHTLIB_ERROR_TIMEOUT_B           -7
 
-#define DHTLIB_INVALID_VALUE    -999
+#ifndef DHTLIB_INVALID_VALUE
+#define DHTLIB_INVALID_VALUE           -999
+#endif
 
 
 // bits are timing based (datasheet)
@@ -38,7 +40,7 @@
 // 70 us   ==> 1
 // See https://github.com/RobTillaart/DHTNew/issues/11
 #ifndef DHTLIB_BIT_THRESHOLD
-#define DHTLIB_BIT_THRESHOLD          50
+#define DHTLIB_BIT_THRESHOLD             50
 #endif
 
 
@@ -79,6 +81,10 @@ public:
     void powerUp();
     void powerDown();
 
+    // suppress error values of -999 => check return value of read() instead
+    bool getSuppressError()           { return _suppressError; };
+    void setSuppressError(bool b)     { _suppressError = b; };
+
 private:
     uint8_t  _dataPin = 0;
     uint8_t  _wakeupDelay = 0;
@@ -89,6 +95,7 @@ private:
     float    _temperature;
     uint32_t _lastRead = 0;
     bool     _waitForRead = false;
+    bool     _suppressError = false;
     uint16_t _readDelay = 0;
 
     uint8_t  _bits[5];  // buffer to receive data

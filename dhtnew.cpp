@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.3.1
+// VERSION: 0.3.2
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -20,6 +20,7 @@
 // 0.3.0  2020-06-12 added getReadDelay & setReadDelay to tune reading interval
 //                   removed get/setDisableIRQ; adjusted wakeup timing; refactor
 // 0.3.1  2020-07-08 added powerUp() powerDown();
+// 0.3.2  2020-07-17 fix #23 added get/setSuppressError(); overrulable DHTLIB_INVALID_VALUE
 
 #include "dhtnew.h"
 
@@ -134,8 +135,11 @@ int DHTNEW::_read()
 
   if (rv != DHTLIB_OK)
   {
-    _humidity    = DHTLIB_INVALID_VALUE;
-    _temperature = DHTLIB_INVALID_VALUE;
+    if (_suppressError == false)
+    {
+      _humidity    = DHTLIB_INVALID_VALUE;
+      _temperature = DHTLIB_INVALID_VALUE;
+    }
     return rv;  // propagate error value
   }
 

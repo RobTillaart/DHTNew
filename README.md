@@ -42,6 +42,14 @@ added **powerDown()** and **powerUp()** for low power applications. Note that af
 the user must wait for two seconds before doing a read(). Just like after a (re)boot.  
 Note: The lib does not (yet) control the power pin of the sensor. 
 Discussion see https://github.com/RobTillaart/DHTNew/issues/13
+13. (0.3.2)
+Added **setSuppressError()** and **getSuppressError()** so the library will not output -999 
+but the last known valid value for temperature and humidity. 
+This flag is usefull to suppress 'negative spikes' in graphs or logs. 
+Default the error values are not suppressed to be backwards compaible.  
+Added **#ifndef** around **DHTLIB_INVALID_VALUE** so the default -999 can be overruled
+compile time to set another error value e.g. -127 or -1 whatever suits the project.
+
 
 ## DHT PIN layout from left to right
 

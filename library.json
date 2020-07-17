@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/RobTillaart/DHTNEW.git"
   },
-  "version":"0.3.1",
+  "version":"0.3.2",
   "frameworks": "arduino",
   "platforms": "*"
 }
