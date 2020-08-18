@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.3.2
+// VERSION: 0.3.3
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -21,6 +21,10 @@
 //                   removed get/setDisableIRQ; adjusted wakeup timing; refactor
 // 0.3.1  2020-07-08 added powerUp() powerDown();
 // 0.3.2  2020-07-17 fix #23 added get/setSuppressError(); overrulable DHTLIB_INVALID_VALUE
+// 0.3.3  2020-08-18 fix #29, create explicit delay between pulling line HIGH and 
+//                   waiting for LOW in handshake to trigger the sensor.
+//                   On fast ESP32 this fails because the capacity / voltage of the long wire
+//                   cannot rise fast enough to be read back as HIGH.
 
 #include "dhtnew.h"
 
@@ -216,6 +220,8 @@ int DHTNEW::_readSensor()
   delayMicroseconds(_wakeupDelay * 1100UL);
 
   // HOST GIVES CONTROL TO SENSOR
+  digitalWrite(_dataPin, HIGH);
+  delayMicroseconds(2);
   pinMode(_dataPin, INPUT_PULLUP);
 
   // DISABLE INTERRUPTS when clock in the bits
