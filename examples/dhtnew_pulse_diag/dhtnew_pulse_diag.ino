@@ -1,12 +1,13 @@
 //
 //    FILE: dhtnew_pulse_diag.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: DHTNEW library pulse measurement tool - diagnostics
 //     URL: https://github.com/RobTillaart/DHTNew
 //
 // HISTORY:
 // 0.1.0    2020-08-15 initial version
+// 0.1.1    2020-09-23 commented noInterrupts as it corrupts timing on AVR.
 
 //
 // DHT PIN layout from left to right
@@ -123,7 +124,7 @@ void measure()
   pinMode(_dataPin, INPUT_PULLUP);
 
   // DISABLE INTERRUPTS when clock in the bits
-  noInterrupts();
+  // noInterrupts();      // gives problems on AVR
 
 
   times[idx++] = micros();

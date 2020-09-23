@@ -1,13 +1,14 @@
 //
 //    FILE: DHT_endless.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.1
+// VERSION: 0.1.2
 // PURPOSE: demo
 //    DATE: 2020-06-04
 //    (c) : MIT
 //
 // 0.1.0    2020-06-04 initial version
 // 0.1.1    2020-06-15 match 0.3.0 error handling
+// 0.1.2    2020-09-22 fix typo
 //
 // DHT PIN layout from left to right
 // =================================
@@ -43,7 +44,7 @@ void loop()
   if (count % 50 == 0)
   {
     Serial.println();
-    Serial.println("OK \tCRC \tTOA \tTOAB \tTOC \tTOD \tSNR \tBS \tUNK");
+    Serial.println("OK \tCRC \tTOA \tTOB \tTOC \tTOD \tSNR \tBS \tUNK");
     for (uint8_t i = 0; i < 9; i++)
     {
       Serial.print(errors[i]);
@@ -121,4 +122,4 @@ void loop()
 }
 
 
-// END OF FILE
+// -- END OF FILE --
