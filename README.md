@@ -50,10 +50,15 @@ Default the error values are not suppressed to be backwards compaible.
 Added **#ifndef** around **DHTLIB_INVALID_VALUE** so the default -999 can be overruled
 compile time to set another error value e.g. -127 or -1 whatever suits the project.
 14. (0.3.3)
-Refactored the low level **readSensor()** as the **BIT SHIFT ERROR** issue #29 & #11 popped up again.
+Refactored the low level **readSensor()** as the **BIT SHIFT ERROR** issue #29 and issue #11 popped up again.
 It was reproduced "efficiently" with an ESP32 and by using long wires.
 Fixed with an explicit digitalWrite(datapin, HIGH) + delayMicroseconds() to have enough time between
 pulling the line HIGH and poiling for the line LOW.
+15. (0.3.4)
+Added **waitFor(state, timeout)** to more precisely follow the datasheet in terms of timing.
+Reintroduced the **interrupt enable/disable flag** as forced noInterrupts()
+could break the timing of the DHT protocol / micros() - seen on AVR.
+
 
 ## DHT PIN layout from left to right
 
@@ -73,11 +78,11 @@ pulling the line HIGH and poiling for the line LOW.
 | Output signal | digital signal via single-bus | 
 | Sensing element | Polymer capacitor | 
 | Operating range | humidity 0-100% RH | temperature -40~80 Celsius | 
-| Accuracy humidity | ±2% RH(Max ±5% RH) | temperature < ±0.5 Celsius | 
+| Accuracy humidity | Â±2% RH(Max Â±5% RH) | temperature < Â±0.5 Celsius | 
 | Resolution or sensitivity | humidity 0.1% RH | temperature 0.1 Celsius | 
-| Repeatability humidity | ±1% RH | temperature ±0.2 Celsius | 
-| Humidity hysteresis | ±0.3% RH | 
-| Long-term Stability | ±0.5% RH/year | 
+| Repeatability humidity | Â±1% RH | temperature Â±0.2 Celsius | 
+| Humidity hysteresis | Â±0.3% RH | 
+| Long-term Stability | Â±0.5% RH/year | 
 | Sensing period | Average: 2s | 
 | Interchangeability |  fully interchangeable | 
 | Dimensions | small size 14 x 18 x 5.5 mm;  | big size 22 x 28 x 5 mm | 
@@ -86,3 +91,6 @@ pulling the line HIGH and poiling for the line LOW.
 ## Operation
 
 See examples
+
+If consistent problems occur with reading a sensor, one should allow interrupts 
+**DHT.setDisableIRQ(true)**

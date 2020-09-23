@@ -2,7 +2,7 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.3.3
+// VERSION: 0.3.4
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -11,7 +11,7 @@
 
 // DHT PIN layout from left to right
 // =================================
-// FRONT : DESCRIPTION  
+// FRONT : DESCRIPTION
 // pin 1 : VCC
 // pin 2 : DATA
 // pin 3 : Not Connected
@@ -19,7 +19,7 @@
 
 #include "Arduino.h"
 
-#define DHTNEW_LIB_VERSION          "0.3.3"
+#define DHTNEW_LIB_VERSION          "0.3.4"
 
 #define DHTLIB_OK                         0
 #define DHTLIB_ERROR_CHECKSUM            -1
@@ -48,59 +48,64 @@ class DHTNEW
 {
 public:
 
-    DHTNEW(uint8_t pin);
+  DHTNEW(uint8_t pin);
 
-    // 0 = unknown, 11 or 22
-    uint8_t getType()                 { return _type; };
-    void setType(uint8_t type = 0);
-    int read();
+  // 0 = unknown, 11 or 22
+  uint8_t  getType()                     { return _type; };
+  void     setType(uint8_t type = 0);
+  int      read();
 
-    // lastRead is in MilliSeconds since start sketch
-    uint32_t lastRead()               { return _lastRead; };
+  // lastRead is in MilliSeconds since start sketch
+  uint32_t lastRead()                    { return _lastRead; };
 
-    // preferred interface
-    float getHumidity()               { return _humidity; };
-    float getTemperature()            { return _temperature; };
+  // preferred interface
+  float    getHumidity()                 { return _humidity; };
+  float    getTemperature()              { return _temperature; };
 
-    // adding offsets works well in normal range
-    // might introduce under- or overflow at the ends of the sensor range
-    void  setHumOffset(float offset)  { _humOffset = offset; };
-    void  setTempOffset(float offset) { _tempOffset = offset; };
-    float getHumOffset()              { return _humOffset; };
-    float getTempOffset()             { return _tempOffset; };
+  // adding offsets works well in normal range
+  // might introduce under- or overflow at the ends of the sensor range
+  void     setHumOffset(float offset)    { _humOffset = offset; };
+  void     setTempOffset(float offset)   { _tempOffset = offset; };
+  float    getHumOffset()                { return _humOffset; };
+  float    getTempOffset()               { return _tempOffset; };
 
-    bool getWaitForReading()          { return _waitForRead; };
-    void setWaitForReading(bool b )   { _waitForRead = b; };
+  bool     getDisableIRQ()               { return _disableIRQ; };
+  void     setDisableIRQ(bool b )        { _disableIRQ = b; };
 
-    // set readDelay to 0 will reset to datasheet values
-    uint16_t getReadDelay()           { return _readDelay; };
-    void setReadDelay(uint16_t rd = 0){ _readDelay = rd; };
+  bool     getWaitForReading()           { return _waitForRead; };
+  void     setWaitForReading(bool b )    { _waitForRead = b; };
 
-    // minimal support for low power applications.
-    // after powerUp one must wait up to two seconds.
-    void powerUp();
-    void powerDown();
+  // set readDelay to 0 will reset to datasheet values
+  uint16_t getReadDelay()                { return _readDelay; };
+  void     setReadDelay(uint16_t rd = 0) { _readDelay = rd; };
 
-    // suppress error values of -999 => check return value of read() instead
-    bool getSuppressError()           { return _suppressError; };
-    void setSuppressError(bool b)     { _suppressError = b; };
+  // minimal support for low power applications.
+  // after powerUp one must wait up to two seconds.
+  void     powerUp();
+  void     powerDown();
+
+  // suppress error values of -999 => check return value of read() instead
+  bool     getSuppressError()            { return _suppressError; };
+  void     setSuppressError(bool b)      { _suppressError = b; };
 
 private:
-    uint8_t  _dataPin = 0;
-    uint8_t  _wakeupDelay = 0;
-    uint8_t  _type = 0;
-    float    _humOffset = 0.0;
-    float    _tempOffset = 0.0;
-    float    _humidity;
-    float    _temperature;
-    uint32_t _lastRead = 0;
-    bool     _waitForRead = false;
-    bool     _suppressError = false;
-    uint16_t _readDelay = 0;
+  uint8_t  _dataPin = 0;
+  uint8_t  _wakeupDelay = 0;
+  uint8_t  _type = 0;
+  float    _humOffset = 0.0;
+  float    _tempOffset = 0.0;
+  float    _humidity;
+  float    _temperature;
+  uint32_t _lastRead = 0;
+  bool     _disableIRQ = true;
+  bool     _waitForRead = false;
+  bool     _suppressError = false;
+  uint16_t _readDelay = 0;
 
-    uint8_t  _bits[5];  // buffer to receive data
-    int      _read();
-    int      _readSensor();
+  uint8_t  _bits[5];  // buffer to receive data
+  int      _read();
+  int      _readSensor();
+  bool     _waitFor(uint8_t state, uint32_t timeout);
 };
 
 // -- END OF FILE --

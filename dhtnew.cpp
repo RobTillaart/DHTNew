@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.3.3
+// VERSION: 0.3.4
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -25,6 +25,12 @@
 //                   waiting for LOW in handshake to trigger the sensor.
 //                   On fast ESP32 this fails because the capacity / voltage of the long wire
 //                   cannot rise fast enough to be read back as HIGH.
+// 0.3.4  2020-09-23 Added **waitFor(state, timeout)** to follow timing from datasheet.
+//                   Restored disableIRQ flag as problems occured on AVR. The default of 
+//                   this flag on AVR is false so interrupts are allowed. 
+//                   This need some investigation
+//                   Fix wake up timing for DHT11 as it does not behave according datasheet.
+//                   fix wakeupDelay bug in setType();
 
 #include "dhtnew.h"
 
@@ -33,28 +39,12 @@
 #define DHTLIB_DHT_WAKEUP          1
 
 // READ_DELAY for blocking read
-// datasheet: DHT11 = 1000 and DHT22 = 2000 
+// datasheet: DHT11 = 1000 and DHT22 = 2000
 // use setReadDelay() to overrule (at own risk)
 // as individual sensors can be read faster.
 // see example DHTnew_setReadDelay.ino
 #define DHTLIB_DHT11_READ_DELAY    1000
 #define DHTLIB_DHT22_READ_DELAY    2000
-
-// max timeout is 100 usec.
-// loops using TIMEOUT use at least 4 clock cycli
-// - read IO
-// - compare IO
-// - compare loopcounter
-// - decrement loopcounter
-//
-// For a 16Mhz (UNO) 100 usec == 1600 clock cycles
-// ==> 100 usec takes max 400 loops
-// for a 240MHz (ESP32) 100 usec == 24000 clock cycles
-// ==> 100 usec takes max 6000 loops
-//
-// By dividing F_CPU by 40000 we "fail" as fast as possible
-#define DHTLIB_TIMEOUT (F_CPU/40000)
-
 
 /////////////////////////////////////////////////////
 //
@@ -67,13 +57,22 @@ DHTNEW::DHTNEW(uint8_t pin)
   pinMode(_dataPin, OUTPUT);
   digitalWrite(_dataPin, HIGH);
   _readDelay = 0;
+  #if defined(__AVR__)
+  _disableIRQ = false;
+  #endif
 };
 
 void DHTNEW::setType(uint8_t type)
 {
-  if ((type == 0) || (type == 11) || (type == 22))
+  if ((type == 0) || (type = 11))
   {
     _type = type;
+    _wakeupDelay = DHTLIB_DHT11_WAKEUP;
+  }
+  if (type == 12)
+  {
+    _type = type;
+    _wakeupDelay = DHTLIB_DHT_WAKEUP;
   }
 }
 
@@ -89,7 +88,7 @@ void DHTNEW::setType(uint8_t type)
 int DHTNEW::read()
 {
   if (_readDelay == 0)
-  { 
+  {
     _readDelay = DHTLIB_DHT22_READ_DELAY;
     if (_type == 11) _readDelay = DHTLIB_DHT11_READ_DELAY;
   }
@@ -211,7 +210,7 @@ int DHTNEW::_readSensor()
   for (uint8_t i = 0; i < 5; i++) _bits[i] = 0;
 
   // HANDLE PENDING IRQ
-  yield();  
+  yield();
 
   // REQUEST SAMPLE - SEND WAKEUP TO SENSOR
   pinMode(_dataPin, OUTPUT);
@@ -225,28 +224,22 @@ int DHTNEW::_readSensor()
   pinMode(_dataPin, INPUT_PULLUP);
 
   // DISABLE INTERRUPTS when clock in the bits
-  noInterrupts();
+  if (_disableIRQ) { noInterrupts(); }
 
+  // DHT22
   // SENSOR PULLS LOW after 20-40 us  => if stays HIGH ==> device not ready
-  uint16_t loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_dataPin) == HIGH)
-  {
-    if (--loopCnt == 0) return DHTLIB_ERROR_SENSOR_NOT_READY;
-  }
+  // timeout is 20 us less due to delay() above
+  // DHT11
+  // SENSOR PULLS LOW after 6000-10000 us 
+  uint32_t WAITFORSENSOR = 50;
+  if (_type == 11)  WAITFORSENSOR = 15000UL;
+  if (_waitFor(LOW, WAITFORSENSOR)) return DHTLIB_ERROR_SENSOR_NOT_READY;
 
   // SENSOR STAYS LOW for ~80 us => or TIMEOUT
-  loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_dataPin) == LOW)
-  {
-    if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_A;
-  }
+  if (_waitFor(HIGH, 90)) return DHTLIB_ERROR_TIMEOUT_A;
 
   // SENSOR STAYS HIGH for ~80 us => or TIMEOUT
-  loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_dataPin) == HIGH)
-  {
-    if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_B;
-  }
+  if (_waitFor(LOW, 90)) return DHTLIB_ERROR_TIMEOUT_B;
 
   // SENSOR HAS NOW SEND ACKNOWLEDGE ON WAKEUP
   // NOW IT SENDS THE BITS
@@ -255,21 +248,13 @@ int DHTNEW::_readSensor()
   for (uint8_t i = 40; i != 0; i--)
   {
     // EACH BIT START WITH ~50 us LOW
-    loopCnt = DHTLIB_TIMEOUT;
-    while(digitalRead(_dataPin) == LOW)
-    {
-      if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_C;
-    }
+    if (_waitFor(HIGH, 70)) return DHTLIB_ERROR_TIMEOUT_C;
 
     // DURATION OF HIGH DETERMINES 0 or 1
     // 26-28 us ==> 0
     //    70 us ==> 1
     uint32_t t = micros();
-    loopCnt = DHTLIB_TIMEOUT;
-    while(digitalRead(_dataPin) == HIGH)
-    {
-      if (--loopCnt == 0) return DHTLIB_ERROR_TIMEOUT_D;
-    }
+    if (_waitFor(LOW, 90)) return DHTLIB_ERROR_TIMEOUT_D;
     if ((micros() - t) > DHTLIB_BIT_THRESHOLD)
     {
       _bits[idx] |= mask;
@@ -284,19 +269,34 @@ int DHTNEW::_readSensor()
     }
   }
   // After 40 bits the sensor pulls the line LOW for 50 us
-  // TODO: should we wait?
-  loopCnt = DHTLIB_TIMEOUT;
-  while(digitalRead(_dataPin) == LOW)
-  {
-    if (--loopCnt == 0) break; // return DHTLIB_ERROR_TIMEOUT_E;
-  }
+  // No functional need to wait for this one
+  // if (_waitFor(HIGH, 60)) return DHTLIB_ERROR_TIMEOUT_E;
 
   // CATCH RIGHTSHIFT BUG ESP (only 1 single bit shift)
-  // humidity is max 1000 = 0x0E8 for DHT22 and 0x6400 for DHT11
+  // humidity is max 1000 = 0x03E8 for DHT22 and 0x6400 for DHT11
   // so most significant bit may never be set.
   if (_bits[0] & 0x80) return DHTLIB_ERROR_BIT_SHIFT;
 
   return DHTLIB_OK;
+}
+
+
+// returns true  if timeout has passed.
+// returns false if timeout is not reached and state is seen.
+bool DHTNEW::_waitFor(uint8_t state, uint32_t timeout)
+{
+  uint32_t start = micros();
+  uint8_t  count = 2;
+  while ((micros() - start) < timeout)
+  {
+    // delayMicroseconds(1);          // less # reads ==> minimizes # glitch reads
+    if (digitalRead(_dataPin) == state)
+    {
+      count--;
+      if (count == 0) return false;  // requested state seen count times
+    }
+  }
+  return true;
 }
 
 // -- END OF FILE --
