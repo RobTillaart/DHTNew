@@ -78,6 +78,7 @@ void DHTNEW::setType(uint8_t type)
 
 // return values:
 // DHTLIB_OK
+// DHTLIB_WAITING_FOR_READ
 // DHTLIB_ERROR_CHECKSUM
 // DHTLIB_ERROR_BIT_SHIFT
 // DHTLIB_ERROR_SENSOR_NOT_READY
@@ -96,7 +97,7 @@ int DHTNEW::read()
   {
     while (millis() - _lastRead < _readDelay)
     {
-      if (!_waitForRead) return DHTLIB_OK;
+      if (!_waitForRead) return DHTLIB_WAITING_FOR_READ;
       yield();
     }
     return _read();
