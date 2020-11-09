@@ -1,7 +1,7 @@
 //
 //    FILE: DHT_endless.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.1.3
 // PURPOSE: demo
 //    DATE: 2020-06-04
 //    (c) : MIT
