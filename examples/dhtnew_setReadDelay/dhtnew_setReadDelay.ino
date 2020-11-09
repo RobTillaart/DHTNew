@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew_setReadDelay.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.1
+// VERSION: 0.1.2
 // PURPOSE: DHTNEW library waitForRead example sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
 //
