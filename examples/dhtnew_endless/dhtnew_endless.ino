@@ -9,10 +9,11 @@
 // 0.1.0    2020-06-04 initial version
 // 0.1.1    2020-06-15 match 0.3.0 error handling
 // 0.1.2    2020-09-22 fix typo
+// 0.1.3    2020-11-09 wait for read handling
 //
 // DHT PIN layout from left to right
 // =================================
-// FRONT : DESCRIPTION  
+// FRONT : DESCRIPTION
 // pin 1 : VCC
 // pin 2 : DATA
 // pin 3 : Not Connected
@@ -25,7 +26,7 @@ DHTNEW mySensor(16);   // ESP 16  UNO 6
 uint32_t count = 0;
 uint32_t start, stop;
 
-uint32_t errors[10] = { 0,0, 0,0, 0,0, 0,0, 0,0 };
+uint32_t errors[11] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 
 void setup()
@@ -44,8 +45,8 @@ void loop()
   if (count % 50 == 0)
   {
     Serial.println();
-    Serial.println("OK \tCRC \tTOA \tTOB \tTOC \tTOD \tSNR \tBS \tUNK");
-    for (uint8_t i = 0; i < 9; i++)
+    Serial.println("OK \tCRC \tTOA \tTOB \tTOC \tTOD \tSNR \tBS \tWFR \tUNK");
+    for (uint8_t i = 0; i < 10; i++)
     {
       Serial.print(errors[i]);
       Serial.print('\t');
@@ -102,11 +103,15 @@ void loop()
       Serial.print("BS,\t");
       errors[7]++;
       break;
+    case DHTLIB_WAITING_FOR_READ:
+      Serial.print("WFR,\t");
+      errors[8]++;
+      break;
     default:
       Serial.print("U");
       Serial.print(chk);
       Serial.print(",\t");
-      errors[8]++;
+      errors[9]++;
       break;
   }
   // DISPLAY DATA
