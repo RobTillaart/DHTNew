@@ -29,6 +29,7 @@
 #define DHTLIB_ERROR_TIMEOUT_C           -5
 #define DHTLIB_ERROR_TIMEOUT_D           -6
 #define DHTLIB_ERROR_TIMEOUT_B           -7
+#define DHTLIB_WAITING_FOR_READ          -8
 
 #ifndef DHTLIB_INVALID_VALUE
 #define DHTLIB_INVALID_VALUE           -999

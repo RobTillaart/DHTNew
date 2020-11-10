@@ -1,13 +1,14 @@
 //
 //    FILE: dhtnew_setReadDelay.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.1
+// VERSION: 0.1.2
 // PURPOSE: DHTNEW library waitForRead example sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
 //
 // HISTORY:
 // 0.1.0    2020-06-12 initial version
 // 0.1.1    2020-06-15 match 0.3.0 error handling
+// 0.1.2    2020-11-09 fix + wait for read handling
 //
 // DHT PIN layout from left to right
 // =================================
@@ -52,7 +53,10 @@ void setup()
     printStatus(chk);
 
     if (chk == DHTLIB_OK) rd -= step;
-    else rd += step;
+    else {
+      rd += step;
+      mySensor.read();
+    }
   }
 
   // safety margin of 100 uSec
@@ -106,6 +110,9 @@ void printStatus(int chk)
       break;
     case DHTLIB_ERROR_BIT_SHIFT:
       Serial.print("Bit shift error,\t");
+      break;
+    case DHTLIB_WAITING_FOR_READ:
+      Serial.print("Waiting for read,\t");
       break;
     default:
       Serial.print("Unknown: ");

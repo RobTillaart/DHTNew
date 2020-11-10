@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew_test.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.5
+// VERSION: 0.1.6
 // PURPOSE: DHTNEW library test sketch for Arduino
 //     URL: https://github.com/RobTillaart/DHTNew
 //
@@ -12,10 +12,11 @@
 // 0.1.3    2020-04-30 replaced humidity and temperature with functions
 // 0.1.4    2020-06-08 improved error handling
 // 0.1.5    2020-06-15 match 0.3.0 error handling
+// 0.1.6    2020-11-09 wait for read handling
 //
 // DHT PIN layout from left to right
 // =================================
-// FRONT : DESCRIPTION  
+// FRONT : DESCRIPTION
 // pin 1 : VCC
 // pin 2 : DATA
 // pin 3 : Not Connected
@@ -117,6 +118,9 @@ void test()
       break;
     case DHTLIB_ERROR_BIT_SHIFT:
       Serial.print("Bit shift error,\t");
+      break;
+    case DHTLIB_WAITING_FOR_READ:
+      Serial.print("Waiting for read,\t");
       break;
     default:
       Serial.print("Unknown: ");
