@@ -2,7 +2,7 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.4.0
+// VERSION: 0.4.1
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -92,7 +92,7 @@ public:
 private:
   uint8_t  _dataPin = 0;
   uint8_t  _wakeupDelay = 0;
-  uint8_t  _type = 0;
+  int      _type = 0;
   float    _humOffset = 0.0;
   float    _tempOffset = 0.0;
   float    _humidity;
