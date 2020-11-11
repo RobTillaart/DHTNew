@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.3.4
+// VERSION: 0.4.0
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -31,6 +31,7 @@
 //                   This need some investigation
 //                   Fix wake up timing for DHT11 as it does not behave according datasheet.
 //                   fix wakeupDelay bug in setType();
+// 0.4.0  2020-11-10 added DHTLIB_WAITING_FOR_READ as return value of read (minor break of interface)
 
 #include "dhtnew.h"
 
