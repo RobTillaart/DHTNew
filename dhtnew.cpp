@@ -63,6 +63,22 @@ DHTNEW::DHTNEW(uint8_t pin)
   #endif
 };
 
+uint8_t DHTNEW::getType()
+{
+  if (_type == 0)
+  {
+    _type = 22;
+    _wakeupDelay = DHTLIB_DHT_WAKEUP;
+    if (_read() == DHTLIB_OK) return _type;
+  
+    _type = 11;
+    _wakeupDelay = DHTLIB_DHT11_WAKEUP;
+    if (_read() == DHTLIB_OK) return _type;
+    _type = 0; // retry next time
+  }
+  return _type;
+}
+
 void DHTNEW::setType(uint8_t type)
 {
   if ((type == 0) || (type = 11))
@@ -89,33 +105,18 @@ void DHTNEW::setType(uint8_t type)
 // DHTLIB_ERROR_TIMEOUT_D
 int DHTNEW::read()
 {
+  if (getType() == 0) return DHTLIB_ERROR_SENSOR_NOT_READY;
   if (_readDelay == 0)
   {
     _readDelay = DHTLIB_DHT22_READ_DELAY;
     if (_type == 11) _readDelay = DHTLIB_DHT11_READ_DELAY;
   }
-  if (_type != 0)
+  while (millis() - _lastRead < _readDelay)
   {
-    while (millis() - _lastRead < _readDelay)
-    {
-      if (!_waitForRead) return DHTLIB_WAITING_FOR_READ;
-      yield();
-    }
-    return _read();
+    if (!_waitForRead) return DHTLIB_WAITING_FOR_READ;
+    yield();
   }
-
-  _type = 22;
-  _wakeupDelay = DHTLIB_DHT_WAKEUP;
-  int rv = _read();
-  if (rv == DHTLIB_OK) return rv;
-
-  _type = 11;
-  _wakeupDelay = DHTLIB_DHT11_WAKEUP;
-  rv = _read();
-  if (rv == DHTLIB_OK) return rv;
-
-  _type = 0; // retry next time
-  return rv;
+  return _read();
 }
 
 // return values:
