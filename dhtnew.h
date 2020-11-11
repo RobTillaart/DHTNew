@@ -52,7 +52,7 @@ public:
   DHTNEW(uint8_t pin);
 
   // 0 = unknown, 11 or 22
-  uint8_t  getType()                     { return _type; };
+  uint8_t  getType();
   void     setType(uint8_t type = 0);
   int      read();
 
