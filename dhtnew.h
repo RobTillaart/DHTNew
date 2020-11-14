@@ -79,6 +79,7 @@ public:
   // set readDelay to 0 will reset to datasheet values
   uint16_t getReadDelay()                { return _readDelay; };
   void     setReadDelay(uint16_t rd = 0) { _readDelay = rd; };
+  uint16_t calculateReadDelay();
 
   // minimal support for low power applications.
   // after powerUp one must wait up to two seconds.
