@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.4.1
+// VERSION: 0.4.2
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -33,6 +33,7 @@
 //                   fix wakeupDelay bug in setType();
 // 0.4.0  2020-11-10 added DHTLIB_WAITING_FOR_READ as return value of read (minor break of interface)
 // 0.4.1  2020-11-11 getType() attempts to detect sensor type
+// 0.4.2  2020-11-14 calculateReadDelay() function
 
 #include "dhtnew.h"
 
@@ -47,6 +48,7 @@
 // see example DHTnew_setReadDelay.ino
 #define DHTLIB_DHT11_READ_DELAY    1000
 #define DHTLIB_DHT22_READ_DELAY    2000
+#define DHTLIB_READ_DELAY_MARGIN   10
 
 /////////////////////////////////////////////////////
 //
@@ -82,6 +84,34 @@ void DHTNEW::setType(uint8_t type)
     _type = type;
     _wakeupDelay = DHTLIB_DHT_WAKEUP;
   }
+}
+
+uint16_t DHTNEW::calculateReadDelay()
+{
+  if (getType() == 0) return _readDelay;
+  // finish previous reading (if there was some) and start new one
+  while (millis() - _lastRead < _readDelay);
+  _read();
+  _readDelay = 0;
+  long start = millis();
+  while (_read() != DHTLIB_OK)
+  {
+    if ((_type == 11) && ((millis() - start) > DHTLIB_DHT11_READ_DELAY)) 
+    {
+      _readDelay = DHTLIB_DHT11_READ_DELAY;
+      return _readDelay;
+    }
+    if ((millis() - start) > DHTLIB_DHT22_READ_DELAY)
+    {
+      _readDelay = DHTLIB_DHT22_READ_DELAY;
+      return _readDelay;    
+    }
+    delay(DHTLIB_READ_DELAY_MARGIN);
+  }
+  _readDelay = millis() - start;
+  // safety margin
+  _readDelay += DHTLIB_READ_DELAY_MARGIN;
+  return _readDelay;
 }
 
 // return values:
