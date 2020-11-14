@@ -32,6 +32,7 @@
 //                   Fix wake up timing for DHT11 as it does not behave according datasheet.
 //                   fix wakeupDelay bug in setType();
 // 0.4.0  2020-11-10 added DHTLIB_WAITING_FOR_READ as return value of read (minor break of interface)
+// 0.4.1  2020-11-11 getType() attempts to detect sensor type
 
 #include "dhtnew.h"
 
@@ -62,6 +63,12 @@ DHTNEW::DHTNEW(uint8_t pin)
   _disableIRQ = false;
   #endif
 };
+
+uint8_t DHTNEW::getType()
+{
+  if (_type == 0) read();
+  return _type;
+}
 
 void DHTNEW::setType(uint8_t type)
 {
