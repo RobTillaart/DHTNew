@@ -89,6 +89,8 @@ void DHTNEW::setType(uint8_t type)
 uint16_t DHTNEW::calculateReadDelay()
 {
   if (getType() == 0) return _readDelay;
+  _readDelay = DHTLIB_DHT22_READ_DELAY;
+  if (_type == 11) _readDelay = DHTLIB_DHT11_READ_DELAY;
   // finish previous reading (if there was some) and start new one
   while (millis() - _lastRead < _readDelay);
   _read();
