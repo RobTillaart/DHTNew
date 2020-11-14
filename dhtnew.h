@@ -2,7 +2,7 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.4.0
+// VERSION: 0.4.1
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -52,7 +52,7 @@ public:
   DHTNEW(uint8_t pin);
 
   // 0 = unknown, 11 or 22
-  uint8_t  getType()                     { return _type; };
+  uint8_t  getType();
   void     setType(uint8_t type = 0);
   int      read();
 
