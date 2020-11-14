@@ -72,12 +72,12 @@ uint8_t DHTNEW::getType()
 
 void DHTNEW::setType(uint8_t type)
 {
-  if ((type == 0) || (type = 11))
+  if ((type == 0) || (type == 11))
   {
     _type = type;
     _wakeupDelay = DHTLIB_DHT11_WAKEUP;
   }
-  if (type == 12)
+  if (type == 22)
   {
     _type = type;
     _wakeupDelay = DHTLIB_DHT_WAKEUP;
