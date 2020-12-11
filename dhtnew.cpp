@@ -35,7 +35,7 @@
 // 0.4.1  2020-11-11 getType() attempts to detect sensor type
 
 #include "dhtnew.h"
-
+#include <stdint.h>
 // these defines are not for user to adjust
 #define DHTLIB_DHT11_WAKEUP        18
 #define DHTLIB_DHT_WAKEUP          1
@@ -158,18 +158,16 @@ int DHTNEW::_read()
   if (_type == 22) // DHT22, DHT33, DHT44, compatible
   {
     _humidity =    (_bits[0] * 256 + _bits[1]) * 0.1;
-    _temperature = ((_bits[2] & 0x7F) * 256 + _bits[3]) * 0.1;
+    /* _temperature = ((_bits[2] & 0x7F) * 256 + _bits[3]) * 0.1; */
+    int16_t val= (_bits[2] << 8 | _bits[3]);
+    _temperature = val * 0.1;
   }
   else // if (_type == 11)  // DHT11, DH12, compatible
   {
     _humidity = _bits[0] + _bits[1] * 0.1;
-    _temperature = _bits[2] + _bits[3] * 0.1;
+    _temperature = _bits[2] + _bits[3] * 0.1; 
   }
-
-  if (_bits[2] & 0x80)  // negative temperature
-  {
-    _temperature = -_temperature;
-  }
+ 
   _humidity = constrain(_humidity + _humOffset, 0, 100);
   _temperature += _tempOffset;
 
