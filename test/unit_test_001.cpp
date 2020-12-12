@@ -38,16 +38,17 @@ unittest(test_constructor)
   DHTNEW dht(4);
 
   // verify default flags
-  // assertEqual(0, dht.getType());
+  // assertEqual(0, dht.getType());     // calls read which blocks.
   assertEqual(0, dht.getHumOffset());
   assertEqual(0, dht.getTempOffset());
-  assertEqual(0, dht.getDisableIRQ());
-  assertEqual(0, dht.getWaitForReading());
-  assertEqual(0, dht.getReadDelay());
-  assertEqual(0, dht.getSuppressError());
+  
+  assertTrue(dht.getDisableIRQ());
+  assertFalse(dht.getWaitForReading());
+  assertEqual(dht.getReadDelay());
+  
+  assertFalse(0, dht.getSuppressError());
 }
 
-/*
 unittest(test_hum_temp)
 {
   DHTNEW dht(4);
@@ -107,9 +108,7 @@ unittest(test_read)
   
   long lr = dht.lastRead();
   fprintf(stderr, "%ld\n", lr);
-
 }
-*/
 
 unittest_main()
 
