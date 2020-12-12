@@ -100,8 +100,9 @@ unittest(test_read)
 {
   DHTNEW dht(4);
 
-  int rc = dht.read();
-  fprintf(stderr, "%d\n", rc);
+  
+  // int rc = dht.read();
+  // fprintf(stderr, "%d\n", rc);
   
   long lr = dht.lastRead();
   fprintf(stderr, "%ld\n", lr);
