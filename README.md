@@ -108,11 +108,10 @@ To elaborated
 
 
 ### Constructor
-- **DHTNEW(uint8_t pin)**
-
-  // 0 = unknown, 11 or 22
-- **getType();
-- **setType(uint8_t type = 0);
+- **DHTNEW(uint8_t pin)** defines the datapin of the sensor.
+- **getType()**  0 = unknown, 11 or 22. 
+In case of 0, **getType()** will try to determine type.
+- **setType(uint8_t type = 0)** allows to force the type of the sensor. 
 
 
 ### Base interface
