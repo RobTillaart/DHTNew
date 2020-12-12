@@ -41,12 +41,10 @@ unittest(test_constructor)
   // assertEqual(0, dht.getType());     // calls read which blocks.
   assertEqual(0, dht.getHumOffset());
   assertEqual(0, dht.getTempOffset());
-  
   assertTrue(dht.getDisableIRQ());
   assertFalse(dht.getWaitForReading());
-  assertEqual(dht.getReadDelay());
-  
-  assertFalse(0, dht.getSuppressError());
+  assertEqual(0 dht.getReadDelay());
+  assertFalse(dht.getSuppressError());
 }
 
 unittest(test_hum_temp)
