@@ -53,12 +53,12 @@ unittest(test_hum_temp)
 
   assertEqual(0, dht.getHumidity());
   assertEqual(0, dht.getHumOffset());
-  dht.setHumOffset(1.5));
+  dht.setHumOffset(1.5);
   assertEqual(1.5, dht.getHumOffset());
   
   assertEqual(0, dht.getTemperature());
   assertEqual(0, dht.getTempOffset());
-  dht.setTempOffset(-1.5));
+  dht.setTempOffset(-1.5);
   assertEqual(-1.5, dht.getTempOffset());
 }
 
@@ -66,33 +66,33 @@ unittest(test_process_flags)
 {
   DHTNEW dht(4);
 
-  dht.setType(11));
+  dht.setType(11);
   assertEqual(11, dht.getType());
-  dht.setType(22));
+  dht.setType(22);
   assertEqual(22, dht.getType());
   
-  dht.setDisableIRQ(true));
+  dht.setDisableIRQ(true);
   assertTrue(dht.getDisableIRQ());
-  dht.setDisableIRQ(false));
+  dht.setDisableIRQ(false);
   assertFalse(dht.getDisableIRQ());
   
-  dht.setWaitForReading(true));
+  dht.setWaitForReading(true);
   assertTrue(dht.getWaitForReading());
-  dht.setWaitForReading(false));
+  dht.setWaitForReading(false);
   assertFalse(dht.getWaitForReading());
   
-  dht.setReadDelay(1500));
+  dht.setReadDelay(1500);
   assertEqual(1500, dht.getReadDelay());
-  dht.setType(11));
-  dht.setReadDelay());
+  dht.setType(11);
+  dht.setReadDelay();
   assertEqual(1000, dht.getReadDelay());
-  dht.setType(22));
-  dht.setReadDelay());
+  dht.setType(22);
+  dht.setReadDelay();
   assertEqual(2000, dht.getReadDelay());
   
-  dht.setSuppressError(true));
+  dht.setSuppressError(true);
   assertTrue(dht.getSuppressError());
-  dht.setSuppressError(false));
+  dht.setSuppressError(false);
   assertFalse(dht.getSuppressError());
 }
 
