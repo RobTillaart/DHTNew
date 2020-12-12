@@ -90,18 +90,18 @@ public:
   void     setSuppressError(bool b)      { _suppressError = b; };
 
 private:
-  uint8_t  _dataPin = 0;
-  uint8_t  _wakeupDelay = 0;
-  uint8_t  _type = 0;
-  float    _humOffset = 0.0;
-  float    _tempOffset = 0.0;
-  float    _humidity;
-  float    _temperature;
-  uint32_t _lastRead = 0;
-  bool     _disableIRQ = true;
-  bool     _waitForRead = false;
+  uint8_t  _dataPin       = 0;
+  uint8_t  _wakeupDelay   = 0;
+  uint8_t  _type          = 0;
+  float    _humOffset     = 0.0;
+  float    _tempOffset    = 0.0;
+  float    _humidity      = 0.0;
+  float    _temperature   = 0.0;
+  uint32_t _lastRead      = 0;
+  bool     _disableIRQ    = true;
+  bool     _waitForRead   = false;
   bool     _suppressError = false;
-  uint16_t _readDelay = 0;
+  uint16_t _readDelay     = 0;
 
   uint8_t  _bits[5];  // buffer to receive data
   int      _read();

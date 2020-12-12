@@ -41,7 +41,11 @@ unittest(test_constructor)
   // assertEqual(0, dht.getType());     // calls read which blocks.
   assertEqual(0, dht.getHumOffset());
   assertEqual(0, dht.getTempOffset());
+  #if defined(__AVR__)
+  assertFalse(dht.getDisableIRQ());
+  #else
   assertTrue(dht.getDisableIRQ());
+  #endif
   assertFalse(dht.getWaitForReading());
   assertEqual(0, dht.getReadDelay());
   assertFalse(dht.getSuppressError());
@@ -85,10 +89,10 @@ unittest(test_process_flags)
   assertEqual(1500, dht.getReadDelay());
   dht.setType(11);
   dht.setReadDelay();
-  assertEqual(1000, dht.getReadDelay());
+  assertEqual(0, dht.getReadDelay());
   dht.setType(22);
   dht.setReadDelay();
-  assertEqual(2000, dht.getReadDelay());
+  assertEqual(0, dht.getReadDelay());
   
   dht.setSuppressError(true);
   assertTrue(dht.getSuppressError());

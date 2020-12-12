@@ -137,7 +137,7 @@ Functions to adjust the communication with the sensor.
 - **getDisableIRQ()** returns the above setting. Default **false**
 - **setWaitForReading(bool b )** flag to enforce a blocking wait. 
 - **getWaitForReading()** returns the above setting.
-- **setReadDelay(uint16_t rd = 0)** To tune the time it waits before actual read. This reduces the blocking time. Default depends on type. 1000 ms (dht11) or 2000 ms (dht22). set readDelay to 0 will reset to datasheet values.
+- **setReadDelay(uint16_t rd = 0)** To tune the time it waits before actual read. This reduces the blocking time. Default depends on type. 1000 ms (dht11) or 2000 ms (dht22). set readDelay to 0 will reset to datasheet values AFTER a call to **read()**.
 - **getReadDelay()** returns the above setting.
 - **powerDown()** pulls datapin down to reduce power consumption
 - **powerUp()** restarts the sensor, note one must wait up to two seconds.
