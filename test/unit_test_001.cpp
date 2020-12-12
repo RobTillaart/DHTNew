@@ -43,7 +43,7 @@ unittest(test_constructor)
   assertEqual(0, dht.getTempOffset());
   assertTrue(dht.getDisableIRQ());
   assertFalse(dht.getWaitForReading());
-  assertEqual(0 dht.getReadDelay());
+  assertEqual(0, dht.getReadDelay());
   assertFalse(dht.getSuppressError());
 }
 
