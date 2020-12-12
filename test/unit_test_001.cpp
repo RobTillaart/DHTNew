@@ -38,7 +38,7 @@ unittest(test_constructor)
   DHTNEW dht(4);
 
   // verify default flags
-  assertEqual(0, dht.getType());
+  // assertEqual(0, dht.getType());
   assertEqual(0, dht.getHumOffset());
   assertEqual(0, dht.getTempOffset());
   assertEqual(0, dht.getDisableIRQ());
