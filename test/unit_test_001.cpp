@@ -47,6 +47,7 @@ unittest(test_constructor)
   assertEqual(0, dht.getSuppressError());
 }
 
+/*
 unittest(test_hum_temp)
 {
   DHTNEW dht(4);
@@ -108,6 +109,7 @@ unittest(test_read)
   fprintf(stderr, "%ld\n", lr);
 
 }
+*/
 
 unittest_main()
 
