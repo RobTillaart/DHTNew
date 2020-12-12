@@ -33,6 +33,8 @@
 //                   fix wakeupDelay bug in setType();
 // 0.4.0  2020-11-10 added DHTLIB_WAITING_FOR_READ as return value of read (minor break of interface)
 // 0.4.1  2020-11-11 getType() attempts to detect sensor type
+//        2020-12-12 add arduino -CI + readme
+
 
 #include "dhtnew.h"
 #include <stdint.h>
@@ -165,7 +167,7 @@ int DHTNEW::_read()
   else // if (_type == 11)  // DHT11, DH12, compatible
   {
     _humidity = _bits[0] + _bits[1] * 0.1;
-    _temperature = _bits[2] + _bits[3] * 0.1; 
+    _temperature = _bits[2] + _bits[3] * 0.1;
   }
  
   _humidity = constrain(_humidity + _humOffset, 0, 100);
@@ -191,7 +193,6 @@ void DHTNEW::powerDown()
 {
   digitalWrite(_dataPin, LOW);
 }
-
 
 /////////////////////////////////////////////////////
 //
