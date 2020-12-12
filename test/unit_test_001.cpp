@@ -42,8 +42,10 @@ unittest(test_constructor)
   assertEqual(0, dht.getHumOffset());
   assertEqual(0, dht.getTempOffset());
   #if defined(__AVR__)
+  fprintf(stderr, "__AVR__ defined.");
   assertFalse(dht.getDisableIRQ());
   #else
+  fprintf(stderr, "__AVR__ not defined.");
   assertTrue(dht.getDisableIRQ());
   #endif
   assertFalse(dht.getWaitForReading());
@@ -104,12 +106,12 @@ unittest(test_read)
 {
   DHTNEW dht(4);
 
-  
+  fprintf(stderr, "\tread() cannot be tested\n");
   // int rc = dht.read();
   // fprintf(stderr, "%d\n", rc);
   
   long lr = dht.lastRead();
-  fprintf(stderr, "%ld\n", lr);
+  fprintf(stderr, "\ttime since lastRead %ld\n", lr);
 }
 
 unittest_main()
