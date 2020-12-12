@@ -19,7 +19,7 @@
 
 #include "Arduino.h"
 
-#define DHTNEW_LIB_VERSION          "0.4.0"
+#define DHTNEW_LIB_VERSION          "0.4.1"
 
 #define DHTLIB_OK                         0
 #define DHTLIB_ERROR_CHECKSUM            -1
