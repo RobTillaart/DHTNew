@@ -1,7 +1,7 @@
 //
 //    FILE: dhtnew.cpp
 //  AUTHOR: Rob.Tillaart@gmail.com
-// VERSION: 0.4.1
+// VERSION: 0.4.2
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
@@ -34,6 +34,7 @@
 // 0.4.0  2020-11-10 added DHTLIB_WAITING_FOR_READ as return value of read (minor break of interface)
 // 0.4.1  2020-11-11 getType() attempts to detect sensor type
 //        2020-12-12 add arduino -CI + readme
+// 0.4.2  2020-12-15 fix negative temperatures
 
 
 #include "dhtnew.h"
@@ -160,16 +161,42 @@ int DHTNEW::_read()
   if (_type == 22) // DHT22, DHT33, DHT44, compatible
   {
     _humidity =    (_bits[0] * 256 + _bits[1]) * 0.1;
-    /* _temperature = ((_bits[2] & 0x7F) * 256 + _bits[3]) * 0.1; */
-    int16_t val= (_bits[2] << 8 | _bits[3]);
-    _temperature = val * 0.1;
+    _temperature = ((_bits[2] & 0x7F) * 256 + _bits[3]) * 0.1;
+    if (_bits[2] & 0x80)
+    {
+      _temperature = -_temperature;
+    }
   }
   else // if (_type == 11)  // DHT11, DH12, compatible
   {
     _humidity = _bits[0] + _bits[1] * 0.1;
     _temperature = _bits[2] + _bits[3] * 0.1;
   }
- 
+
+  // HEXDUMP DEBUG
+  /*
+  Serial.println();
+  // CHECKSUM
+  if (_bits[4] < 0x10) Serial.print(0);
+  Serial.print(_bits[4], HEX);
+  Serial.print("    ");
+  // TEMPERATURE
+  if (_bits[2] < 0x10) Serial.print(0);
+  Serial.print(_bits[2], HEX);
+  if (_bits[3] < 0x10) Serial.print(0);
+  Serial.print(_bits[3], HEX);
+  Serial.print("    ");
+  Serial.print(_temperature, 1);
+  Serial.print("    ");
+  // HUMIDITY
+  if (_bits[0] < 0x10) Serial.print(0);
+  Serial.print(_bits[0], HEX);
+  if (_bits[1] < 0x10) Serial.print(0);
+  Serial.print(_bits[1], HEX);
+  Serial.print("    ");
+  Serial.print(_humidity, 1);
+  */
+
   _humidity = constrain(_humidity + _humOffset, 0, 100);
   _temperature += _tempOffset;
 

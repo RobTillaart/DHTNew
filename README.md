@@ -71,6 +71,9 @@ could break the timing of the DHT protocol / micros() - seen on AVR.
 Added **DHTLIB_WAITING_FOR_READ** as return value of read => minor break of interface
 17. (0.4.1)
 Added Arduino-CI support + **gettype()** now tries to determine type if not known.
+18. (0.4.2)
+Fix negative temperatures. Tested with DHTNew_debug.ino and hexdump in .cpp and a freezer.  
+Note: testing in a freezer is not so good for humidity readings.
 
 
 ## DHT PIN layout from left to right
