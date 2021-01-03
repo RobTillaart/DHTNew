@@ -153,3 +153,11 @@ See examples
 
 If consistent problems occur with reading a sensor, one should allow interrupts 
 **DHT.setDisableIRQ(true)**
+
+
+## ESP8266 & DHT22
+
+- The DHT22 sensor has some problems in combination with specific pins of the ESP8266. See more details
+  - https://github.com/RobTillaart/DHTNew/issues/31  (message jan 3, 2021)
+  - https://github.com/arendst/Tasmota/issues/3522
+  
