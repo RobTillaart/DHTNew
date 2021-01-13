@@ -74,6 +74,9 @@ Added Arduino-CI support + **gettype()** now tries to determine type if not know
 18. (0.4.2)
 Fix negative temperatures. Tested with DHTNew_debug.ino and hexdump in .cpp and a freezer.  
 Note: testing in a freezer is not so good for humidity readings.
+19. (0.4.3)
+Added **reset()** to reset internal variables when a sensor blocks this might help.
+Added **lastRead()** to return time the sensor is last read. (in millis).
 
 
 ## DHT PIN layout from left to right
@@ -88,36 +91,36 @@ Note: testing in a freezer is not so good for humidity readings.
 
 ## Specification DHT22
 
-| | | |
+| Model                     | DHT22         | Notes |
 |:----|:----|:----|
-| Model | DHT22 |
-| Power supply | 3.3 - 6 V DC | 
-| Output signal | digital signal via single-bus | 
-| Sensing element | Polymer capacitor | 
-| Operating range | humidity 0-100% RH | temperature -40~80° Celsius | 
-| Accuracy humidity | ±2% RH(Max ±5% RH) | temperature < ±0.5° Celsius | 
-| Resolution or sensitivity | humidity 0.1% RH | temperature 0.1° Celsius | 
-| Repeatability humidity | ±1% RH | temperature ±0.2° Celsius | 
-| Humidity hysteresis | ±0.3% RH | 
-| Long-term Stability | ±0.5% RH/year | 
-| Sensing period | Average: 2s | 
-| Interchangeability |  fully interchangeable | 
-| Dimensions | small size 14 x 18 x 5.5 mm;  | big size 22 x 28 x 5 mm | 
+| Power supply              | 3.3 - 6 V DC  | 
+| Output signal             | digital signal via single-bus | 
+| Sensing element           | Polymer capacitor  | 
+| Operating range           | humidity 0-100% RH | temperature -40~80° Celsius | 
+| Accuracy humidity         | ±2% RH(Max ±5% RH) | temperature < ±0.5° Celsius | 
+| Resolution or sensitivity | humidity 0.1% RH   | temperature 0.1° Celsius | 
+| Repeatability humidity    | ±1% RH             | temperature ±0.2° Celsius | 
+| Humidity hysteresis       | ±0.3% RH           | 
+| Long-term Stability       | ±0.5% RH/year      | 
+| Sensing period            | Average: 2s        | 
+| Interchangeability        | fully interchangeable  | 
+| Dimensions                | small 14 x 18 x 5.5 mm | big 22 x 28 x 5 mm | 
 
 
 ## Interface
 
-To elaborated
-
 
 ### Constructor
+
 - **DHTNEW(uint8_t pin)** defines the datapin of the sensor.
+- **reset()** might help to reset a sensor behaving badly.
 - **getType()**  0 = unknown, 11 or 22. 
 In case of 0, **getType()** will try to determine type.
 - **setType(uint8_t type = 0)** allows to force the type of the sensor. 
 
 
 ### Base interface
+
 - **read()** reads a new temperature and humidity from the sensor
 - **lastRead()** returns milliseconds since last **read()**
 - **getHumidity()** returns last read value (float) or -999 in case of error. 
@@ -126,7 +129,9 @@ Note this error value can be suppressed by **setSuppressError(bool)**.
 
 
 ### Offset 
+
 Adding offsets works well in normal range however they might introduce under- or overflow at the ends of the sensor range.
+
 - **setHumOffset(float offset)** typical < ±5% RH.
 - **setTempOffset(float offset)** typical < ±2°C.
 - **getHumOffset()** idem.
@@ -134,7 +139,9 @@ Adding offsets works well in normal range however they might introduce under- or
 
 
 ### Control
+
 Functions to adjust the communication with the sensor.
+
 - **setDisableIRQ(bool b )** allows or suppresses interrupts during core read function to keep timing as correct as possible. **Note AVR only**
 - **getDisableIRQ()** returns the above setting. Default **false**
 - **setWaitForReading(bool b )** flag to enforce a blocking wait. 
