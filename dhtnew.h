@@ -2,12 +2,13 @@
 //
 //    FILE: dhtnew.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.4.2
+// VERSION: 0.4.3
 // PURPOSE: DHT Temperature & Humidity Sensor library for Arduino
 //     URL: https://github.com/RobTillaart/DHTNEW
 //
 // HISTORY:
 // see dhtnew.cpp file
+
 
 // DHT PIN layout from left to right
 // =================================
@@ -17,9 +18,11 @@
 // pin 3 : Not Connected
 // pin 4 : GND
 
+
 #include "Arduino.h"
 
-#define DHTNEW_LIB_VERSION          "0.4.2"
+#define DHTNEW_LIB_VERSION                (F("0.4.2"))
+
 
 #define DHTLIB_OK                         0
 #define DHTLIB_ERROR_CHECKSUM            -1
@@ -50,6 +53,10 @@ class DHTNEW
 public:
 
   DHTNEW(uint8_t pin);
+
+  // resets all internals to construction time 
+  // might help to reset a sensor behaving badly..
+  void     reset();
 
   // 0 = unknown, 11 or 22
   uint8_t  getType();
@@ -88,6 +95,7 @@ public:
   // suppress error values of -999 => check return value of read() instead
   bool     getSuppressError()            { return _suppressError; };
   void     setSuppressError(bool b)      { _suppressError = b; };
+
 
 private:
   uint8_t  _dataPin       = 0;
