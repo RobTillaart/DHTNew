@@ -67,7 +67,7 @@ DHTNEW::DHTNEW(uint8_t pin)
 };
 
 
-void reset()
+void DHTNEW::reset()
 {
   // Data-bus's free status is high voltage level.
   pinMode(_dataPin, OUTPUT);
