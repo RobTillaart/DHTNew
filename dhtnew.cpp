@@ -37,7 +37,7 @@
 //  0.4.2  2020-12-15  fix negative temperatures
 //  0.4.3  2021-01-13  add reset(), add lastRead()
 //  0.4.4  2021-02-01  fix negative temperatures DHT22 (again)
-//  0.4.5  2021-02-14  fix -0°C encoding of DHT22
+//  0.4.5  2021-02-14  fix -0°C encoding of DHT22  ( bit pattern 0x8000 )
 
 
 #include "dhtnew.h"
