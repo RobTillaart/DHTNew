@@ -2,8 +2,8 @@
 //    FILE: dhtnew_endless_insideFunction.ino
 // AUTHORS: Rob Tillaart, Vladislaw Kuzmin
 // VERSION: 0.1.5
-// PURPOSE: demo
-//    DATE: 2020-06-04
+// PURPOSE: Demonstration example of endless DHT values' reporting in a function
+//    DATE: 2021-02-19
 //    (c) : MIT
 //
 // 0.1.0    2020-06-04 initial version
