@@ -1,3 +1,26 @@
+//
+//    FILE: dhtnew_endless_insideFunction.ino
+// AUTHORS: Rob Tillaart, Vladislaw Kuzmin
+// VERSION: 0.1.5
+// PURPOSE: demo
+//    DATE: 2020-06-04
+//    (c) : MIT
+//
+// 0.1.0    2020-06-04 initial version
+// 0.1.1    2020-06-15 match 0.3.0 error handling
+// 0.1.2    2020-09-22 fix typo
+// 0.1.3    2020-11-09 wait for read handling
+// 0.1.5    2021-02-19 improved the sketch to read the DHT's value in a function
+//
+// DHT PINs' layout from left to right
+// =================================
+// FRONT : DESCRIPTION
+// pin 1 : VCC
+// pin 2 : DATA
+// pin 3 : Not Connected
+// pin 4 : GND
+
+
 #include <dhtnew.h>
 
 uint64_t previousMillis;
