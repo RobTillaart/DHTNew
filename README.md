@@ -77,6 +77,14 @@ Note: testing in a freezer is not so good for humidity readings.
 19. (0.4.3)
 Added **reset()** to reset internal variables when a sensor blocks this might help.
 Added **lastRead()** to return time the sensor is last read. (in millis).
+20. (0.4.4)
+DO NOT USE incorrect negative temp.
+21. (0.4.5)
+Prevent -0.0 when negative temp is 0;
+DO NOT USE as it maps every negative temp to zero.
+22. (0.4.6) 
+Fixed negative temperature (again).
+
 
 
 ## DHT PIN layout from left to right
