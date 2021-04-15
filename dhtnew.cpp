@@ -255,11 +255,7 @@ int DHTNEW::_read()
   {
     return DHTLIB_ERROR_CHECKSUM;
   }
-  
-  if ((_temperature < -40) || (temperature > 80)) return DHTLIB_VALUE_OUT_OF_RANGE;
-  if ((_humidity < -40) || (temperature > 80)) return DHTLIB_VALUE_OUT_OF_RANGE;
-  
-  
+
   return DHTLIB_OK;
 }
 
