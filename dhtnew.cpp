@@ -241,7 +241,7 @@ int DHTNEW::_read()
   {
     return DHTLIB_HUMIDITY_OUT_OF_RANGE;
   }
-  if ((_temperature < -40) || (temperature > 80))
+  if ((_temperature < -40) || (_temperature > 80))
   {
     return DHTLIB_TEMPERATURE_OUT_OF_RANGE;
   }
