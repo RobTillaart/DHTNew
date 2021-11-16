@@ -92,8 +92,11 @@ void DHTNEW::reset()
   _suppressError = false;
   _readDelay     = 0;
 #if defined(__AVR__)
-  _disableIRQ = false;
+  _disableIRQ    = false;
 #endif
+// #if defined(MKR1010)  // TODO find out real define 
+  // _disableIRQ    = false;
+// #endif
 }
 
 
@@ -340,13 +343,24 @@ int DHTNEW::_readSensor()
   for (uint8_t i = 40; i != 0; i--)
   {
     // EACH BIT START WITH ~50 us LOW
-    if (_waitFor(HIGH, 70)) return DHTLIB_ERROR_TIMEOUT_C;
+    if (_waitFor(HIGH, 70)) 
+    {
+      // Most critical timeout
+      // Serial.print("IC: ");
+      // Serial.println(i);
+      return DHTLIB_ERROR_TIMEOUT_C;
+    }
 
     // DURATION OF HIGH DETERMINES 0 or 1
     // 26-28 us ==> 0
     //    70 us ==> 1
     uint32_t t = micros();
-    if (_waitFor(LOW, 90)) return DHTLIB_ERROR_TIMEOUT_D;
+    if (_waitFor(LOW, 90))
+    {
+      // Serial.print("ID: ");
+      // Serial.println(i);
+      return DHTLIB_ERROR_TIMEOUT_D;
+    }
     if ((micros() - t) > DHTLIB_BIT_THRESHOLD)
     {
       _bits[idx] |= mask;

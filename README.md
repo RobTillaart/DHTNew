@@ -17,79 +17,6 @@ DHTNEW is stable for both ARM and AVR.
 It is based upon the well tested DHTlib code.
 
 
-## History 
-
-DHTNEW has some new features compared to the DHTlib code.
-
-1. The constructor has a pin number, so the one sensor - one object paradigm is chosen.
-   So you can now make a DHTNEW object bathroom(4), kitchen(3), etc.
-2. The **read()** function now reads both DHT11 and DHT22 sensors and selects the right 
-   math per sensor based upon the bit patterns. 
-3. An **offset** can be set for both temperature and humidity to have a first-order linear
-   calibration in the class itself. Of course, this introduces a possible risk of
-   under- or overflow.
-   For a more elaborated or non-linear offset, I refer to my multimap class.
-4. **lastRead()** keeps track of the last time the sensor is read. If this is not too long ago 
-   one can decide not to read the sensors but use the current values for temperature and humidity.
-   This saves up to 20+ milliseconds for a DHT11 or 5+ milliseconds for a DHT22. Note that these sensors 
-   should have 1-2 seconds between reads according to specification. 
-   In the future, this functionality could be inside the library by setting a time threshold
-   (e.g. 1 second by default) to give more stable results.
-5. Added **interrupt enable/disable flag** to prevent interrupts disturb timing of DHT protocol.
-   Be aware that this may affect other parts of your application.
-6. (0.1.7) added an automatic check of lastRead in the read call. If request a read to fast it will just return OK.
-7. (0.1.7) added **waitForReading flag** (kudos to Mr-HaleYa) to let the sensor explicitly 
-   wait until a new value can be read.
-8. (0.2.0) Temperature and humidity are private now, use **getTemperature()** and **getHumidity()**
-9. (0.2.1) Adjusted the bit timing threshold to work around issue #11 
-10. (0.2.2) added **ERROR_SENSOR_NOT_READY** and differentiated timeout errors.
-11. (0.3.0)
-removed interrupt flag, now the library always disables interrupts during 
-the clocking of the bits.
-Added getReadDelay & setReadDelay to tune reading interval. Check the example code.
-Adjusted the timing in the wake-up part of the protocol. 
-Added more comments to describe the protocol.
-12. (0.3.1)
-added **powerDown()** and **powerUp()** for low power applications. Note that after **powerUp()**
-the user must wait for two seconds before doing a read(). Just like after a (re)boot.  
-Note: The lib does not (yet) control the power pin of the sensor. 
-Discussion see https://github.com/RobTillaart/DHTNew/issues/13
-13. (0.3.2)
-Added **setSuppressError()** and **getSuppressError()** so the library will not output -999 
-but the last known valid value for temperature and humidity. 
-This flag is useful to suppress 'negative spikes' in graphs or logs. 
-Default the error values are not suppressed to be backwards compatible.  
-Added **#ifndef** around **DHTLIB_INVALID_VALUE** so the default -999 can be overruled
-compile time to set another error value e.g. -127 or -1 whatever suits the project.
-14. (0.3.3)
-Refactored the low level **readSensor()** as the **BIT SHIFT ERROR** issue #29 and issue #11 popped up again.
-It was reproduced "efficiently" with an ESP32 and by using long wires.
-Fixed with an explicit digitalWrite(dataPin, HIGH) + delayMicroseconds() to have enough time between
-pulling the line HIGH and polling for the line LOW.
-15. (0.3.4)
-Added **waitFor(state, timeout)** to more precisely follow the datasheet in terms of timing.
-Reintroduced the **interrupt enable/disable flag** as forced noInterrupts()
-could break the timing of the DHT protocol / micros() - seen on AVR.
-16. (0.4.0)
-Added **DHTLIB_WAITING_FOR_READ** as return value of read => minor break of interface
-17. (0.4.1)
-Added Arduino-CI support + **gettype()** now tries to determine type if not known.
-18. (0.4.2)
-Fix negative temperatures. Tested with DHTNew_debug.ino and hexdump in .cpp and a freezer.  
-Note: testing in a freezer is not so good for humidity readings.
-19. (0.4.3)
-Added **reset()** to reset internal variables when a sensor blocks this might help.
-Added **lastRead()** to return time the sensor is last read. (in millis).
-20. (0.4.4)
-DO NOT USE incorrect negative temp.
-21. (0.4.5)
-Prevent -0.0 when negative temp is 0;
-DO NOT USE as it maps every negative temp to zero.
-22. (0.4.6) 
-Fixed negative temperature (again).
-
-
-
 ## DHT PIN layout from left to right
 
 | Front |      | Description   |
@@ -171,8 +98,21 @@ This is used to keep spikes out of your graphs / logs.
 
 See examples
 
-If consistent problems occur with reading a sensor, one should allow interrupts 
-**DHT.setDisableIRQ(true)**
+
+#### TIME_OUT
+
+If consistent TIMOUT_C or TIMEOUT_D occur during reading a sensor, 
+one could try if allowing interrupts solves the issue **DHT.setDisableIRQ(false)**.
+
+This solved this problem at least on
+- AVR boards   - is build into the constructor
+- MKR1010 Wifi - see https://github.com/RobTillaart/DHTNew/issues/67
+                 (added as comment in the examples)
+
+
+#### Serial
+The MKR1010Wifi board need to wait for Serial at startup if you want to monitor it 
+from the IDE. Adding the line ```while(!Serial):``` fixes this. (added to the examples).
 
 
 ## ESP8266 & DHT22
@@ -182,6 +122,81 @@ If consistent problems occur with reading a sensor, one should allow interrupts
   - https://github.com/arendst/Tasmota/issues/3522
 
 
+## History 
+
+DHTNEW has some new features compared to the DHTlib code.
+
+1. The constructor has a pin number, so the one sensor - one object paradigm is chosen.
+   So you can now make a DHTNEW object bathroom(4), kitchen(3), etc.
+2. The **read()** function now reads both DHT11 and DHT22 sensors and selects the right 
+   math per sensor based upon the bit patterns. 
+3. An **offset** can be set for both temperature and humidity to have a first-order linear
+   calibration in the class itself. Of course, this introduces a possible risk of
+   under- or overflow.
+   For a more elaborated or non-linear offset, I refer to my multimap class.
+4. **lastRead()** keeps track of the last time the sensor is read. If this is not too long ago 
+   one can decide not to read the sensors but use the current values for temperature and humidity.
+   This saves up to 20+ milliseconds for a DHT11 or 5+ milliseconds for a DHT22. Note that these sensors 
+   should have 1-2 seconds between reads according to specification. 
+   In the future, this functionality could be inside the library by setting a time threshold
+   (e.g. 1 second by default) to give more stable results.
+5. Added **interrupt enable/disable flag** to prevent interrupts disturb timing of DHT protocol.
+   Be aware that this may affect other parts of your application.
+6. (0.1.7) added an automatic check of lastRead in the read call. If request a read to fast it will just return OK.
+7. (0.1.7) added **waitForReading flag** (kudos to Mr-HaleYa) to let the sensor explicitly 
+   wait until a new value can be read.
+8. (0.2.0) Temperature and humidity are private now, use **getTemperature()** and **getHumidity()**
+9. (0.2.1) Adjusted the bit timing threshold to work around issue #11 
+10. (0.2.2) added **ERROR_SENSOR_NOT_READY** and differentiated timeout errors.
+11. (0.3.0)
+removed interrupt flag, now the library always disables interrupts during 
+the clocking of the bits.
+Added getReadDelay & setReadDelay to tune reading interval. Check the example code.
+Adjusted the timing in the wake-up part of the protocol. 
+Added more comments to describe the protocol.
+12. (0.3.1)
+added **powerDown()** and **powerUp()** for low power applications. Note that after **powerUp()**
+the user must wait for two seconds before doing a read(). Just like after a (re)boot.  
+Note: The lib does not (yet) control the power pin of the sensor. 
+Discussion see https://github.com/RobTillaart/DHTNew/issues/13
+13. (0.3.2)
+Added **setSuppressError()** and **getSuppressError()** so the library will not output -999 
+but the last known valid value for temperature and humidity. 
+This flag is useful to suppress 'negative spikes' in graphs or logs. 
+Default the error values are not suppressed to be backwards compatible.  
+Added **#ifndef** around **DHTLIB_INVALID_VALUE** so the default -999 can be overruled
+compile time to set another error value e.g. -127 or -1 whatever suits the project.
+14. (0.3.3)
+Refactored the low level **readSensor()** as the **BIT SHIFT ERROR** issue #29 and issue #11 popped up again.
+It was reproduced "efficiently" with an ESP32 and by using long wires.
+Fixed with an explicit digitalWrite(dataPin, HIGH) + delayMicroseconds() to have enough time between
+pulling the line HIGH and polling for the line LOW.
+15. (0.3.4)
+Added **waitFor(state, timeout)** to more precisely follow the datasheet in terms of timing.
+Reintroduced the **interrupt enable/disable flag** as forced noInterrupts()
+could break the timing of the DHT protocol / micros() - seen on AVR.
+16. (0.4.0)
+Added **DHTLIB_WAITING_FOR_READ** as return value of read => minor break of interface
+17. (0.4.1)
+Added Arduino-CI support + **gettype()** now tries to determine type if not known.
+18. (0.4.2)
+Fix negative temperatures. Tested with DHTNew_debug.ino and hexdump in .cpp and a freezer.  
+Note: testing in a freezer is not so good for humidity readings.
+19. (0.4.3)
+Added **reset()** to reset internal variables when a sensor blocks this might help.
+Added **lastRead()** to return time the sensor is last read. (in millis).
+20. (0.4.4)
+DO NOT USE incorrect negative temp.
+21. (0.4.5)
+Prevent -0.0 when negative temp is 0;
+DO NOT USE as it maps every negative temp to zero.
+22. (0.4.6) 
+Fixed negative temperature (again).
+
+
 ## Future
 
 - update documentation
+- test on more boards
+-
+ 
