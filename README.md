@@ -192,6 +192,12 @@ Prevent -0.0 when negative temp is 0;
 DO NOT USE as it maps every negative temp to zero.
 22. (0.4.6) 
 Fixed negative temperature (again).
+23. (0.4.7)
+fix #60 negative temperatures below -25.5°C + readme.md
+24. (0.4.8)
+fixes to improve Arduino-lint
+25. (0.4.9)
+add optional flag DHTLIB_VALUE_OUT_OF_RANGE
 
 
 ## Future
