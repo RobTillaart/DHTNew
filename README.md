@@ -20,7 +20,6 @@ Supports DHT11, DHT22, DHT33, DHT44, AM2301, AM2302, AM2303 as these all have th
 Note there are differences e.g. DHT11 has no negative temperature, no decimals, and a longer wakeup time.
 
 
-
 ## DHT PIN layout from left to right
 
 | Front |      | Description   |
@@ -224,6 +223,6 @@ added ```while(!Serial);``` in examples to they work for MKR1010 Wifi.
 - investigate temperature constraining (type dependant.
 - update documentation
 - move history to separate release_notes.md file ?
-
+-
 
  
