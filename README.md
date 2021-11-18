@@ -8,13 +8,17 @@
 
 # DHTNew
 
-Arduino library for DHT11 and DHT22 with automatic sensor type recognition.
+Arduino library for DHT11 and DHT22 (and compatible) with automatic sensor type recognition.
 
 
 ## Description
 
-DHTNEW is stable for both ARM and AVR. 
-It is based upon the well tested DHTlib code.
+DHTNEW is stable for both ARM and AVR. It is based upon the well tested DHTlib code.
+This is the main development library of all my DHT libraries.
+
+Supports DHT11, DHT22, DHT33, DHT44, AM2301, AM2302, AM2303 as these all have the same protocol.
+Note there are differences e.g. DHT11 has no negative temperature, no decimals, and a longer wakeup time.
+
 
 
 ## DHT PIN layout from left to right
@@ -70,6 +74,7 @@ Note this error value can be suppressed by **setSuppressError(bool)**.
 ### Offset 
 
 Adding offsets works well in normal range however they might introduce under- or overflow at the ends of the sensor range.
+humidity is constrained to 0..100% in the code. For temperature such constrain would be type dependant, so not done.
 
 - **void setHumOffset(float offset)** typical < ±5% RH.
 - **void setTempOffset(float offset)** typical < ±2°C.
@@ -81,11 +86,13 @@ Adding offsets works well in normal range however they might introduce under- or
 
 Functions to adjust the communication with the sensor.
 
-- **void setDisableIRQ(bool b )** allows or suppresses interrupts during core read function to keep timing as correct as possible. **Note AVR only**
-- **bool getDisableIRQ()** returns the above setting. Default **false**
+- **void setDisableIRQ(bool b )** allows or suppresses interrupts during core read function to keep timing as correct as possible. **Note AVR + MKR1010**
+- **bool getDisableIRQ()** returns the above setting. Default **true**.
 - **void setWaitForReading(bool b )** flag to enforce a blocking wait. 
 - **bool getWaitForReading()** returns the above setting.
-- **void setReadDelay(uint16_t rd = 0)** To tune the time it waits before actual read. This reduces the blocking time. Default depends on type. 1000 ms (dht11) or 2000 ms (dht22). set readDelay to 0 will reset to datasheet values AFTER a call to **read()**.
+- **void setReadDelay(uint16_t rd = 0)** To tune the time it waits before actual read. This reduces the blocking time. 
+Default depends on type. 1000 ms (dht11) or 2000 ms (dht22). 
+set readDelay to 0 will reset to datasheet values AFTER a call to **read()**.
 - **uint16_t getReadDelay()** returns the above setting.
 - **void powerDown()** pulls dataPin down to reduce power consumption
 - **void powerUp()** restarts the sensor, note one must wait up to two seconds.
@@ -109,13 +116,19 @@ This solved this problem at least on
 - MKR1010 Wifi - see https://github.com/RobTillaart/DHTNew/issues/67
                  (added as comment in the examples)
 
+In version 0.4.10 the TIMEOUT_C is extended from 70-90 us to even suppress the TIMEOUT_C
+even more. See discussion and tests in https://github.com/RobTillaart/DHTNew/issues/67.
+
 
 #### Serial
+
 The MKR1010Wifi board need to wait for Serial at startup if you want to monitor it 
 from the IDE. Adding the line ```while(!Serial):``` fixes this. (added to the examples).
 
+There might be more boards that need this line to work properly.
 
-## ESP8266 & DHT22
+
+#### ESP8266 & DHT22
 
 - The DHT22 sensor has some problems in combination with specific pins of the ESP8266. See more details
   - https://github.com/RobTillaart/DHTNew/issues/31  (message Jan 3, 2021)
@@ -180,11 +193,11 @@ Added **DHTLIB_WAITING_FOR_READ** as return value of read => minor break of inte
 17. (0.4.1)
 Added Arduino-CI support + **gettype()** now tries to determine type if not known.
 18. (0.4.2)
-Fix negative temperatures. Tested with DHTNew_debug.ino and hexdump in .cpp and a freezer.  
+Fix negative temperatures. Tested with DHTNew_debug.ino and hex dump in .cpp and a freezer.  
 Note: testing in a freezer is not so good for humidity readings.
 19. (0.4.3)
 Added **reset()** to reset internal variables when a sensor blocks this might help.
-Added **lastRead()** to return time the sensor is last read. (in millis).
+Added **lastRead()** to return time the sensor is last read. (in milliseconds).
 20. (0.4.4)
 DO NOT USE incorrect negative temp.
 21. (0.4.5)
@@ -193,16 +206,24 @@ DO NOT USE as it maps every negative temp to zero.
 22. (0.4.6) 
 Fixed negative temperature (again).
 23. (0.4.7)
-fix #60 negative temperatures below -25.5°C + readme.md
+fix #60 negative temperatures below -25.5°C + readme.md.
 24. (0.4.8)
-fixes to improve Arduino-lint
+fixes to improve Arduino-lint.
 25. (0.4.9)
-add optional flag DHTLIB_VALUE_OUT_OF_RANGE
+add optional flag DHTLIB_VALUE_OUT_OF_RANGE.
+26. (0.4.10)
+updated build-CI to do compile test - UNO, due, zero, Leonardo, m4, esp32, esp8266, mega2560.
+updated readme.md - added badges and remarks after testing with MKR1010 Wifi.
+updated TIMEOUT_C from 70->90 us to minimize its occurrence - See https://github.com/RobTillaart/DHTNew/issues/67.
+added ```while(!Serial);``` in examples to they work for MKR1010 Wifi.
 
 
 ## Future
 
-- update documentation
 - test on more boards
--
+- investigate temperature constraining (type dependant.
+- update documentation
+- move history to separate release_notes.md file ?
+
+
  
