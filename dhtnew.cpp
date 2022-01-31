@@ -330,7 +330,7 @@ int DHTNEW::_readSensor()
   {
     // HANDLE PENDING IRQ
     yield();
-    delayMicroseconds(1100UL);
+    delayMicroseconds(180UL);
   }
   while((micros() - startWakeup) < (_wakeupDelay * 1100UL));
 
