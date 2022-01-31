@@ -330,7 +330,8 @@ int DHTNEW::_readSensor()
   {
     // HANDLE PENDING IRQ
     yield();
-    delayMicroseconds(180UL);
+    // 180 gives good wakeup delay on UNO for DHT22 / DHT11 (issue #72)
+    delayMicroseconds(180UL);  
   }
   while((micros() - startWakeup) < (_wakeupDelay * 1100UL));
 
