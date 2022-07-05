@@ -191,9 +191,8 @@ int DHTNEW::_read()
   // enable interrupts again
 #if defined(ESP32)
   portENABLE_INTERRUPTS();
-#else
-  interrupts();
 #endif
+  interrupts();
 
   // Data-bus's free status is high voltage level.
   pinMode(_dataPin, OUTPUT);
@@ -353,9 +352,8 @@ int DHTNEW::_readSensor()
   {
 #if defined(ESP32)  
     portDISABLE_INTERRUPTS();
-#else
-    noInterrupts();
 #endif
+    noInterrupts();
   }
 
   // DHT22
