@@ -56,6 +56,7 @@
 //  0.4.12  2022-01-31  Fix #72, delayMicroseconds() for wakeUp
 //  0.4.13  2022-07-05  Fix #76, disable interrupts for ESP32.
 //  0.4.14  2022-10-13  Fix #79, experimental support for Si7021.
+//                      Add RP2040 pico in build-ci
 
 
 
