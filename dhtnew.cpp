@@ -186,7 +186,7 @@ int DHTNEW::read()
   //  experimental 0.4.14
   _type = 70;
   _wakeupDelay = DHTLIB_SI7021_WAKEUP;
-  int rv = _read();
+  rv = _read();
   if (rv == DHTLIB_OK) return rv;
 
   _type = 0; // retry next time
