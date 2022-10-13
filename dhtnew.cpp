@@ -67,7 +67,7 @@
 #define DHTLIB_DHT11_WAKEUP           (18 * 1100UL)
 #define DHTLIB_DHT_WAKEUP             (1 * 1100UL)
 //  experimental 0.4.14
-#define DHTLIB_SI7021_WAKEUP          (0.3 * 1100UL)
+#define DHTLIB_SI7021_WAKEUP          (0.5 * 1100UL)
 
 
 // READ_DELAY for blocking read
