@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.4.16]  2022-10-17
 - Fix #84 correct the reading of type 70 for Sonoff Si7021.
+- fix keywords.txt
 
 ## [0.4.15]  2022-10-13
 - Fix #81, recognize DHT22 as type 70. Add minimal wakeup delay.
