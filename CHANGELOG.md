@@ -6,29 +6,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [0.4.16]  2022-10-17
+## [0.4.16] - 2022-10-17
 - Fix #84 correct the reading of type 70 for Sonoff Si7021.
 - fix keywords.txt
 
-## [0.4.15]  2022-10-13
+## [0.4.15] - 2022-10-13
 - Fix #81, recognize DHT22 as type 70. Add minimal wakeup delay.
 
-## [0.4.14]  2022-10-13
+## [0.4.14] - 2022-10-13
 - Fix #79, experimental support for Si7021.
 - Add RP2040 pico in build-CI
 - Add CHANGELOG.md
 
-## [0.4.13]  2022-07-05
+## [0.4.13] - 2022-07-05
 - Fix #76, disable interrupts for ESP32.
 
-## [0.4.12]  2022-01-31
+## [0.4.12] - 2022-01-31
 - Fix #72, delayMicroseconds() for wakeUp
 
-## [0.4.11]  2021-12-16
+## [0.4.11] - 2021-12-16
 - update library.json, license, minor edits (clean up),
 - add constants to unit tests
 
-## [0.4.10]  2021-11-18
+## [0.4.10] - 2021-11-18
 - update build-CI - compilation test on M4 and ESP32 of examples
 - update readme.md, badges, typos, reorganizing
 - added note: MKR1010 Wifi support - setDisableIRQ(false)
