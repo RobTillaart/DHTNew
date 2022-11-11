@@ -143,11 +143,24 @@ from the IDE. Adding the line ```while(!Serial):``` fixes this. (added to the ex
 There might be more boards that need this line to work properly.
 
 
-#### ESP8266 & DHT22
+#### DHT22 and ESP8266
 
 - The DHT22 sensor has some problems in combination with specific pins of the ESP8266. See more details
   - https://github.com/RobTillaart/DHTNew/issues/31  (message Jan 3, 2021)
   - https://github.com/arendst/Tasmota/issues/3522
+
+
+#### Voltage AM2301 and ESP8266
+
+In a test an AM2301 had problems giving no humidity (99.9% overflow) when the
+DHTStable library was used with an ESP8266. (Reported by mail, no GH issue).
+As this DHTStable library is strongly related to the DHTNew it is mentioned here too.
+
+After days of testing and thinking and more testing the cause was found. 
+The AM2301 was powered by a 5V3 power supply which was apparently too high while having the
+data handshakes at 3V3. 
+When the VCC voltage was lowered to 5V1 it appeared to work as it should. 
+(Kudos to Viktor for finding the cause)
 
 
 ## History 
