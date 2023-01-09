@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.4.18] - 2023-01-09
+- update license to 2023
+- update GitHub actions
 - fix #89, add experimental support for AM2320, AM2321, AM2322.
 - update readme.md.
 
