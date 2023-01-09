@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [0.4.18] - 2022-11-05
+## [0.4.18] - 2023-01-09
 - fix #89, add experimental support for AM2320, AM2321, AM2322.
 - update readme.md.
 
