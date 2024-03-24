@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [0.4.19] - 2024-03-24
+- Fix #95, units of T & H
+- update GitHub actions
+- update readme.md
+- minor edits
+
+
 ## [0.4.19] - 2023-10-25
 - update readme.md
-
 
 ## [0.4.18] - 2023-01-09
 - update license to 2023
