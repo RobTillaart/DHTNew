@@ -67,7 +67,7 @@ unittest(test_constructor)
   assertEqual(0, dht.getHumOffset());
   assertEqual(0, dht.getTempOffset());
 
-  assertEqual(0, lastRead();
+  assertEqual(0, dht.lastRead();
 
 #if defined(__AVR__)
   fprintf(stderr, "__AVR__ defined.");
