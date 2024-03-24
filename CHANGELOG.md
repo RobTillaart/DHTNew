@@ -6,10 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [0.4.19] - 2024-03-24
-- Fix #95, units of T & H
+## [0.4.20] - 2024-03-24
+- fix #95, units of T & H
 - update GitHub actions
+- refactor **setType()** map invalid types to 0
 - update readme.md
+- update unit test (minor)
 - minor edits
 
 
