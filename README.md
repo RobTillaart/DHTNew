@@ -57,6 +57,13 @@ Feedback (both positive and negative) about the AM232X sensors is welcome.
 **Note: check the datasheet how to connect!**
 
 
+### 0.5.0 Negative temperature
+
+Apparently there are DHT22's which use another representation for negative temperatures.
+Since 0.5.0 the library automatically detects this and chooses the right algorithm.
+See issue #100.
+
+
 ### Related
 
 - https://github.com/RobTillaart/DHTNew
