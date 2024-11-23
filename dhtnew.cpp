@@ -193,34 +193,9 @@ int DHTNEW::_read()
   else               //  DHT22, DHT33, DHT44, compatible + Si7021
   {
     _humidity = (_bits[0] * 256 + _bits[1]) * 0.1;
-    //  See issue #100 - 2 different representations
-    if ((_bits[2] & 0x40) == 0x40 )  //  negative 
-    {
-      int16_t t = (_bits[2] << 8) + _bits[3];  //  16 bits, as raw int
-      _temperature = t * 0.1;
-    }
-    else
-    {
-      int16_t t = ((_bits[2] & 0x7F) * 256 + _bits[3]);
-      if (t == 0)
-      {
-        _temperature = 0.0;     //  prevent -0.0;
-      }
-      else
-      {
-        if ((_bits[2] & 0x80) == 0x80 )  // negative
-        {
-          t = -t;
-        }
-        _temperature = t * 0.1;
-      }
-    }
-  }
-  
-/*
-    //  original patch
+
     //  positive temperature?
-    if ((_bits[2] & 0x80) != 0x80 ) 
+    if ((_bits[2] & 0x80) != 0x80 )
     {
       int16_t t = ((_bits[2] & 0x7F) * 256 + _bits[3]);
       if (t == 0)
@@ -237,14 +212,14 @@ int DHTNEW::_read()
         int16_t t = ((_bits[2] & 0x7F) * 256 + _bits[3]);
         _temperature = t * -0.1;
       }
-      else 
+      else
       {
         int16_t t = (_bits[2] << 8) + _bits[3];  //  16 bits, as raw int
         _temperature = t * 0.1;
       }
     }
   }
-*/
+
 
   //  HEXDUMP DEBUG
   /*
