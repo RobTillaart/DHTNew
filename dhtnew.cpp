@@ -13,6 +13,7 @@
 
 
 //  these defines are not for user to adjust (microseconds)
+//  it adds 10% above the data sheet to allow a margin.
 #define DHTLIB_DHT11_WAKEUP           (18 * 1100UL)
 #define DHTLIB_DHT_WAKEUP             (1 * 1100UL)
 //  experimental 0.4.14
@@ -45,19 +46,20 @@ void DHTNEW::reset()
   pinMode(_dataPin, OUTPUT);
   digitalWrite(_dataPin, HIGH);
 
-  _wakeupDelay   = 0;
-  _type          = 0;
-  _humOffset     = 0.0;
-  _tempOffset    = 0.0;
-  _humidity      = 0.0;
-  _temperature   = 0.0;
-  _lastRead      = 0;
-  _disableIRQ    = true;
-  _waitForRead   = false;
-  _suppressError = false;
-  _readDelay     = 0;
+  _wakeupDelay    = 0;
+  _type           = 0;
+  _humidityOffset = 0.0;
+  _temperatureOffset = 0.0;
+  _humidity       = 0.0;
+  _temperature    = 0.0;
+  _lastRead       = 0;
+  _disableIRQ     = true;
+  _waitForRead    = false;
+  _suppressError  = false;
+  _readDelay      = 0;
 #if defined(__AVR__)
-  _disableIRQ    = false;
+  //  overrule
+  _disableIRQ     = false;
 #endif
 // #if defined(ARDUINO_SAMD_MKRWIFI1010)  //  fix for issue #67
   // _disableIRQ    = false;
@@ -80,7 +82,7 @@ void DHTNEW::setType(uint8_t type)
 
   if ((type == 22) || (type == 23))
   {
-    _type = type;
+    _type = 22;  //  cannot differentiate type;
     _wakeupDelay = DHTLIB_DHT_WAKEUP;
   }
   else if (type == 11)
@@ -125,27 +127,49 @@ int DHTNEW::read()
   }
 
   //  AUTODETECT
-  //  make sure sensor had time to wake up.
+  //  make sure sensor had time to wake up after start of sketch.
   while (millis() < 1000);
+
+  //  NOTE: we could add conversion H and T here and
+  //        check if these are in the allowed range.
+  //        humidity 0..100%,   temperature 0..80C or -40..80C
+  //        drawback: would increase footprint.
 
   //  NOTE: cannot differentiate between type 23 and 22
   _type = 22;
   _wakeupDelay = DHTLIB_DHT_WAKEUP;
   int rv = _read();
-  if (rv == DHTLIB_OK) return rv;
+  if (rv == DHTLIB_OK)
+  {
+    //  test data bits to check for KY015 see issue #102
+    //  if it has DHT11 encoding.
+    //  humidity cannot be over 100.0 % = 0x03E8 in DHT22 encoding
+    //  test would incorrectly fail if there is a very low humidity
+    if (_bits[0] > 3)
+    {
+      _type = 11;
+    }
+    return rv;
+  }
 
   _type = 11;
   _wakeupDelay = DHTLIB_DHT11_WAKEUP;
   rv = _read();
-  if (rv == DHTLIB_OK) return rv;
+  if (rv == DHTLIB_OK)
+  {
+    return rv;
+  }
 
   //  experimental 0.4.14
   _type = 70;
   _wakeupDelay = DHTLIB_SI7021_WAKEUP;
   rv = _read();
-  if (rv == DHTLIB_OK) return rv;
+  if (rv == DHTLIB_OK)
+  {
+    return rv;
+  }
 
-  _type = 0; // retry next time
+  _type = 0;  //  retry next time
   return rv;
 }
 
@@ -185,10 +209,12 @@ int DHTNEW::_read()
     return rv;        //  propagate error value
   }
 
-  if (_type == 11)    //  DHT11, DH12, compatible
+  if (_type == 11)    //  DHT11, DH12, KY015 compatible
   {
-    _humidity    = _bits[0] + _bits[1] * 0.1;
-    _temperature = _bits[2] + _bits[3] * 0.1;
+    _humidity    = _bits[0];
+    if (_bits[1]) _humidity += _bits[1] * 0.1;
+    _temperature = _bits[2];
+    if (_bits[3]) _temperature + _bits[3] * 0.1;
   }
   else               //  DHT22, DHT33, DHT44, compatible + Si7021
   {
@@ -200,9 +226,12 @@ int DHTNEW::_read()
       int16_t t = ((_bits[2] & 0x7F) * 256 + _bits[3]);
       if (t == 0)
       {
-        _temperature = 0.0;     //  prevent -0.0;
+        _temperature = 0.0;     //  prevents -0.0;
       }
-      _temperature = t * 0.1;
+      else
+      {
+        _temperature = t * 0.1;
+      }
     }
     else  //  negative temperature
     {
@@ -257,15 +286,16 @@ int DHTNEW::_read()
   }
 #endif
 
-  if (_humOffset != 0.0)
+  if (_humidityOffset != 0.0)
   {
-    _humidity += _humOffset;
+    _humidity += _humidityOffset;
+    //  constrain range
     if (_humidity > 100)    _humidity = 100;
     else if (_humidity < 0) _humidity = 0;
   }
-  if (_tempOffset != 0.0)
+  if (_temperatureOffset != 0.0)
   {
-    _temperature += _tempOffset;
+    _temperature += _temperatureOffset;
   }
 
   //  TEST CHECKSUM
