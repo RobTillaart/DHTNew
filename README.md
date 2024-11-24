@@ -83,9 +83,13 @@ See also https://arduino.stackexchange.com/questions/86448/dht22-sensor-reading-
 
 ### Related
 
-- https://github.com/RobTillaart/DHTNew
-- https://github.com/RobTillaart/DHTStable
+- https://github.com/RobTillaart/DHTNew DHT11/22 etc
+- https://github.com/RobTillaart/DHTStable DHT11/22 etc
 - https://github.com/RobTillaart/DHT_Simulator
+- https://github.com/RobTillaart/DS18B20_INT OneWire temperature sensor
+- https://github.com/RobTillaart/DS18B20_RT OneWire temperature sensor
+- https://github.com/RobTillaart/SHT31 Sensirion humidity / temperature sensor
+- https://github.com/RobTillaart/SHT85 Sensirion humidity / temperature sensor
 - https://www.kandrsmith.org/RJS/Misc/Hygrometers/calib_many.html (interesting)
 - https://github.com/RobTillaart/Temperature (conversions, dewPoint, heat index etc.)
 
