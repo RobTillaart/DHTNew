@@ -57,14 +57,14 @@ Feedback (both positive and negative) about the AM232X sensors is welcome.
 **Note: check the datasheet how to connect!**
 
 
-### KY-015
+### KY-015 (dht11)
 
-Since 0.5.1 there is **experimental** support for the KY-015, which is a DHT11 (sort of).
-Not tested myself but the KY-015 is confirmed to work, see https://github.com/RobTillaart/DHTNew/issues/102
-Although it is a DHT11, the KY-015 was recognized as a DHT22 resulting in faulty conversions.
+Since 0.5.1 there is support for the KY-015. Although it is a DHT11, the KY-015 behaves slightly 
+different (faster wakeup) and was recognized as a DHT22 resulting in faulty conversions.
+The library sensor recognition code has been adapted so it should be recognized now.
+In the case the recognition fails, one can use **setType(11)** to force the type.
 
-The library sensor recognition code has been adapted so it should be recognized.
-In the case this fails, one can use **setType(11)** to force the type.
+The KY-015 is confirmed to work, see https://github.com/RobTillaart/DHTNew/issues/102
 
 Feedback about the KY-015 sensors is welcome.
 

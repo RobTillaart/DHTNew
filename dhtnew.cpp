@@ -141,15 +141,17 @@ int DHTNEW::read()
   int rv = _read();
   if (rv == DHTLIB_OK)
   {
-    //  test data bits to check for KY015 see issue #102
-    //  if it has DHT11 encoding.
-    //  humidity cannot be over 100.0 % = 0x03E8 in DHT22 encoding
-    //  test would incorrectly fail if there is a very low humidity
-    if (_bits[0] > 3)
+    //  see issue #102
+    //  test high humidity bits to check for KY015/ DHT11 encoding
+    //  in DHT22 encoding humidity cannot be over 100.0 % == 0x03E8
+    //  so the high bits cannot be over 0x03
+    //  test can incorrectly fail if there is an extreme low humidity
+    //  note desert air still has about ~20% RH
+    if (_bits[0] <= 0x03)
     {
-      _type = 11;
+      return rv;
     }
-    return rv;
+    //  fall through to test KY015 as DHT11
   }
 
   _type = 11;
@@ -214,7 +216,7 @@ int DHTNEW::_read()
     _humidity    = _bits[0];
     if (_bits[1]) _humidity += _bits[1] * 0.1;
     _temperature = _bits[2];
-    if (_bits[3]) _temperature + _bits[3] * 0.1;
+    if (_bits[3]) _temperature += _bits[3] * 0.1;
   }
   else               //  DHT22, DHT33, DHT44, compatible + Si7021
   {
@@ -224,9 +226,10 @@ int DHTNEW::_read()
     if ((_bits[2] & 0x80) != 0x80 )
     {
       int16_t t = ((_bits[2] & 0x7F) * 256 + _bits[3]);
+      //  prevent -0.0;
       if (t == 0)
       {
-        _temperature = 0.0;     //  prevents -0.0;
+        _temperature = 0.0;
       }
       else
       {
