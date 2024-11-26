@@ -152,7 +152,7 @@ int DHTNEW::read()
       return rv;
     }
     //  KY015 as DHT11
-    type = 11;
+    _type = 11;
     rv = _read();  //  read again with correct conversion.
     return rv;
   }
