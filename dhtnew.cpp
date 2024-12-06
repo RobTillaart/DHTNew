@@ -153,10 +153,10 @@ int DHTNEW::read()
     }
     //  KY015 as DHT11
     _type = 11;
+    _wakeupDelay = DHTLIB_DHT11_WAKEUP;
     rv = _read();  //  read again with correct conversion.
     return rv;
   }
-
   _type = 11;
   _wakeupDelay = DHTLIB_DHT11_WAKEUP;
   rv = _read();
