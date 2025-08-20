@@ -26,6 +26,3 @@ compile:
     # - mega2560
     - rpipico
 
-  libraries:
-    - "DHTNew"
-
