@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.5.5] - 2026-01-10
 - update GitHub actions
+- update examples
 - minor edits
 
 ## [0.5.4] - 2025-08-20
