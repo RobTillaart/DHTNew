@@ -21,7 +21,6 @@ DHTNEW mySensor(5);   //  ESP 16    UNO 5    MKR1010 5
 void setup()
 {
   while(!Serial);     //  MKR1010 needs this
-
   Serial.begin(115200);
   Serial.println();
   Serial.println("dhtnew_test.ino");
